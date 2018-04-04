@@ -1,0 +1,25 @@
+CREATE CONSTRAINT ON (petType:PetType) ASSERT petType.name IS UNIQUE;
+
+LOAD CSV WITH HEADERS FROM "file:///pet-type.csv" AS petTypes
+CREATE (
+    petType:PetType
+    { name: petTypes.name }
+)
+
+CREATE CONSTRAINT ON (petBreed:PetBreed) ASSERT petBreed.name IS UNIQUE;
+
+LOAD CSV WITH HEADERS FROM "file:///dog-breed.csv" AS petBreeds
+MATCH (dog:PetType {name: "Dog"})
+CREATE (
+    petBreed:PetBreed
+    { name: petBreeds.name }
+)
+MERGE(dog)<-[r:HAS_TYPE]-(petBreed) RETURN dog,petBreed
+
+LOAD CSV WITH HEADERS FROM "file:///cat-breed.csv" AS petBreeds
+MATCH (cat:PetType {name: "Cat"})
+CREATE (
+    petBreed:PetBreed
+    { name: petBreeds.name }
+)
+MERGE(cat)<-[r:HAS_TYPE]-(petBreed) RETURN cat,petBreed

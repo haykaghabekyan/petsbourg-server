@@ -1,0 +1,34 @@
+{
+  "name": "petsbourg.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/scripts/index.js",
+  "scripts": {
+    "server:dev": "tsc --outDir ./dist/scripts --watch",
+    "server:prod": "tsc --outDir ./dist/scripts",
+    "start:dev": "nodemon --watch ./dist/scripts",
+    "start:prod": "node ./dist/server/scripts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hayk Aghabekyan",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.12.1",
+    "ts-loader": "^3.2.0",
+    "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "@types/express": "^4.0.39",
+    "@types/morgan": "^1.7.35",
+    "axios": "^0.17.1",
+    "bcrypt": "^1.0.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.0",
+    "lodash": "^4.17.4",
+    "morgan": "^1.9.0",
+    "neo4j-driver": "^1.5.3",
+    "path": "^0.12.7",
+    "uuid": "^3.2.1"
+  }
+}
