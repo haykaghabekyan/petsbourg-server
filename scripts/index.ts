@@ -5,15 +5,17 @@ import * as cors from "cors";
 import ApiRouter from "./api/router";
 
 class Server {
-    public app: express.Application;
+    readonly port: Number;
+    private app: express.Application;
 
-    constructor () {
+    constructor (port: Number) {
+        this.port = port;
         this.app = express();
         this.config();
         this.routes();
     }
 
-    public config () {
+    private config () {
         // Log requests to console
         this.app.use(morgan('dev'));
 
@@ -22,9 +24,15 @@ class Server {
         this.app.use(bodyParser.urlencoded({
             extended: true
         }));
+
+        this.app.use('error', Server.onError);
+
+        this.app.listen(this.port, () => {
+            console.log(`Server listening on port ${port}`);
+        });
     }
 
-    public routes (): void {
+    private routes (): void {
         const apiRouter: ApiRouter = new ApiRouter();
 
         const corsOptions = {
@@ -34,32 +42,25 @@ class Server {
 
         this.app.use('/api', cors(corsOptions), apiRouter.router);
     }
-}
 
-const port: Number = Number(process.env.PORT) || 8080;
-
-const server = new Server();
-
-// START THE SERVER
-server.app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
-
-server.app.use('error', onError);
-
-function onError(error: NodeJS.ErrnoException): void {
-    if (error.syscall !== 'listen') throw error;
-    let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
-    switch(error.code) {
-        case 'EACCES':
-            console.error(`${bind} requires elevated privileges`);
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(`${bind} is already in use`);
-            process.exit(1);
-            break;
-        default:
-            throw error;
+    static onError(error: NodeJS.ErrnoException): void {
+        if (error.syscall !== 'listen') throw error;
+        let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
+        switch(error.code) {
+            case 'EACCES':
+                console.error(`${bind} requires elevated privileges`);
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(`${bind} is already in use`);
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
     }
 }
+
+const port: Number = Number(process.env.PORT) || 3000;
+
+new Server(port);

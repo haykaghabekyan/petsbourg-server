@@ -31,8 +31,8 @@ class PetsRouter {
 
     }
 
-    async create (req: Request, res: Response): Promise<Response> {
-        const { user, body } = req;
+    async create (req: Request, res: Response): Promise<void> {
+        const { user, body } = req as any;
 
         const data = {
             uid: user.uid,

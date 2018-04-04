@@ -13,7 +13,7 @@ class Pet {
 
         try {
             const results = await session.run("MATCH (petType:PetType) RETURN petType");
-            petTypes = results.records.map(record => record.toObject().petType);
+            petTypes = results.records.map(record => (record.toObject() as any).petType);
         } catch (error) {
             console.log(error);
             petTypes = [];
