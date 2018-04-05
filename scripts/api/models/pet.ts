@@ -26,7 +26,7 @@ class Pet {
         let petBreeds;
 
         try {
-            const results = await session.run("MATCH (n) RETURN n");
+            const results = await session.run("MATCH (petBreed:PetBreed)<-[r]->(petType:PetType) RETURN petBreed, r, petType");
             petBreeds = results.records.map(record => record.toObject());
         } catch (error) {
             console.log(error);
