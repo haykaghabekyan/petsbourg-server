@@ -6,6 +6,7 @@ CREATE (
     { name: petTypes.name }
 )
 
+
 CREATE CONSTRAINT ON (petBreed:PetBreed) ASSERT petBreed.name IS UNIQUE;
 
 LOAD CSV WITH HEADERS FROM "file:///dog-breed.csv" AS petBreeds

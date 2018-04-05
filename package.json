@@ -4,8 +4,8 @@
   "description": "",
   "main": "./dist/scripts/index.js",
   "scripts": {
-    "server:dev": "tsc --outDir ./dist/scripts --watch",
-    "server:prod": "tsc --outDir ./dist/scripts",
+    "build:dev": "tsc --outDir ./dist/scripts --watch",
+    "build:prod": "tsc --outDir ./dist/scripts",
     "start:dev": "nodemon --watch ./dist/scripts",
     "start:prod": "node ./dist/server/scripts",
     "test": "echo \"Error: no test specified\" && exit 1"
