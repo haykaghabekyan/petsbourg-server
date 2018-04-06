@@ -14,7 +14,10 @@ class PetsRouter {
     async getPetTypes (req: Request, res: Response): Promise<any> {
         const petTypes = await Pet.getPetTypes();
 
-        res.send(petTypes);
+        res.send({
+            success: true,
+            petTypes: petTypes
+        });
     }
 
     async getPetBreeds (req: Request, res: Response): Promise<any> {
