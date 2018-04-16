@@ -21,6 +21,7 @@ class PetsRouter {
     }
 
     async getPetBreeds (req: Request, res: Response): Promise<any> {
+
         const petBreeds = await Pet.getPetBreeds();
 
         res.send(petBreeds);

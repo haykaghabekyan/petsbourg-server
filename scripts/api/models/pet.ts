@@ -9,14 +9,23 @@ class Pet {
     breed = null;
 
     static async getPetTypes() {
-        let petTypes;
+        let petTypes = {};
 
         try {
-            const results = await session.run("MATCH (petType:PetType) RETURN petType");
-            petTypes = results.records.map(record => (record.toObject() as any).petType.properties);
+            const results = await session.run("MATCH (petBreed:PetBreed)-[r]-(petType:PetType) RETURN petBreed, petType");
+            results.records.forEach(record => {
+                const rec = (record.toObject() as any);
+
+                petTypes[rec.petType.properties.name] = petTypes[rec.petType.properties.name] || [];
+
+                petTypes[rec.petType.properties.name].push({
+                    petBreed: rec.petBreed.properties.name,
+                });
+
+            });
         } catch (error) {
             console.log(error);
-            petTypes = [];
+            console.log("error");
         }
 
         return petTypes;
@@ -27,6 +36,7 @@ class Pet {
 
         try {
             const results = await session.run("MATCH (petBreed:PetBreed)<-[r]->(petType:PetType) RETURN petBreed, r, petType");
+            console.log(results);
             petBreeds = results.records.map(record => record.toObject());
         } catch (error) {
             console.log(error);
