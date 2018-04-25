@@ -7,7 +7,7 @@
     "build:dev": "tsc --outDir ./dist/scripts --watch",
     "build:prod": "tsc --outDir ./dist/scripts",
     "start:dev": "nodemon --watch ./dist/scripts",
-    "start:prod": "node ./dist/server/scripts",
+    "start": "node ./dist/scripts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hayk Aghabekyan",
