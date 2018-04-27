@@ -25,6 +25,9 @@ CREATE (
 )
 MERGE(cat)<-[r:HAS_TYPE]-(petBreed) RETURN cat,petBreed
 
+
+
+
 LOAD CSV WITH HEADERS FROM "file:///fish-breed.csv" AS petBreeds
 MATCH (fish:PetType {name: "Fish"})
 CREATE (
@@ -32,6 +35,9 @@ CREATE (
     { name: petBreeds.name }
 )
 MERGE(fish)<-[r:HAS_TYPE]-(petBreed) RETURN fish,petBreed
+
+
+
 
 LOAD CSV WITH HEADERS FROM "file:///rabbit-breed.csv" AS petBreeds
 MATCH (rabbit:PetType {name: "Rabbit"})
@@ -41,6 +47,8 @@ CREATE (
 )
 MERGE(rabbit)<-[r:HAS_TYPE]-(petBreed) RETURN rabbit,petBreed
 
+
+
 LOAD CSV WITH HEADERS FROM "file:///bird-breed.csv" AS petBreeds
 MATCH (bird:PetType {name: "Bird"})
 CREATE (
@@ -48,3 +56,13 @@ CREATE (
     { name: petBreeds.name }
 )
 MERGE(bird)<-[r:HAS_TYPE]-(petBreed) RETURN bird,petBreed
+
+
+
+LOAD CSV WITH HEADERS FROM "file:///hamster-breed.csv" AS petBreeds
+MATCH (hamster:PetType {name: "Hamster"})
+CREATE (
+    petBreed:PetBreed
+    { name: petBreeds.name }
+)
+MERGE(hamster)<-[r:HAS_TYPE]-(petBreed) RETURN hamster,petBreed
