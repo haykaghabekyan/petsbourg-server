@@ -24,8 +24,7 @@ class Pet {
 
             });
         } catch (error) {
-            console.log(error);
-            console.log("error");
+            console.log("error", error);
         }
 
         return petTypes;
@@ -36,45 +35,37 @@ class Pet {
 
         try {
             const results = await session.run("MATCH (petBreed:PetBreed)<-[r]->(petType:PetType) RETURN petBreed, r, petType");
-            console.log(results);
             petBreeds = results.records.map(record => record.toObject());
         } catch (error) {
-            console.log(error);
+            console.log("error", error);
             petBreeds = [];
         }
 
         return petBreeds;
     }
 
-    static async getUserPets() {
+    static async getUserPets(uid: string) {
         let pets;
 
-        const parameters = {};
+        const parameters = {
+            uid
+        };
 
         try {
-            const results = await session.run("" +
-                "MATCH(pet:Pet {uid:{uid}}) ", parameters);
-            pets = results.records[0].toObject();
+            const results = await session.run("MATCH (pet:Pet)-[r]-(user:User {uid:{uid}}) RETURN pet", parameters);
+            pets = results.records.map(record => record.toObject().pet.properties);
+
         } catch (error) {
-            console.log(error);
-            pets = null;
+            console.log("error", error);
+            pets = [];
         }
 
         return pets;
     }
 
-    static async addPet({ uid, type, breed, gender, name }): Promise<object> {
-        let pet;
-
-        const parameters = {
-            uid,
-            type,
-            breed,
-            gender,
-            name,
-        };
-
-        // "RETURN pet.id as id, pet.breed as breed, pet.gender as gender, pet.name as name"
+    static async addPet({ pet, user }): Promise<object> {
+        // const { uid } = user;
+        // const { type, breed, gender, name } = pet;
 
         try {
             const results = await session.run("" +
@@ -83,13 +74,11 @@ class Pet {
                 "CREATE (pet:Pet {type:{type}, breed:{breed}, gender:{gender}, name:{name}}) " +
                 "MERGE (user)-[owns:OWNS]-(pet) " +
                 "MERGE (pet)-[hasBreed:HAS_BREED]-(petBreed) " +
-                "RETURN pet", parameters);
-
-            console.log(results);
+                "RETURN pet", { ...user, ...pet });
 
             pet = results.records[0].toObject();
         } catch (error) {
-            console.log(error);
+            console.log("error", error);
             pet = null;
         }
 

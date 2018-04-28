@@ -29,18 +29,21 @@ class PetsRouter {
 
     async getUserPets(req: Request, res: Response): Promise<any> {
 
-        res.send({
+        const { user } = req as any;
 
-        });
+        const pets = await Pet.getUserPets(user.uid);
 
+        res.send(pets);
     }
 
     async create (req: Request, res: Response): Promise<void> {
         const { user, body } = req as any;
 
         const data = {
-            uid: user.uid,
-            ...body
+            user,
+            pet: {
+                ...body
+            },
         };
 
         let pet = null;

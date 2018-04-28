@@ -1,6 +1,9 @@
 import { Router, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
+
 import User from "../models/user";
+import Pet from "../models/pet";
+
 import JWT_PUBLIC_KEY from "../../configs/jwt";
 
 const signToken = (user): jwt => {
@@ -26,13 +29,16 @@ class AuthRouter {
     }
 
     static async signIn (req: Request, res: Response): Promise<Response> {
-        const user = await User.signIn(req.body);
+        const user: any = await User.signIn(req.body);
 
         if (user) {
+            const pets = await Pet.getUserPets(user.uid);
+
             res.status(201).json({
                 success: true,
                 message: 'Signed in successfully.',
                 token: signToken(user),
+                pets: pets,
             });
         } else {
             return res.status(400).send({
