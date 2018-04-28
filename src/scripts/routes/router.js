@@ -1,11 +1,11 @@
 import { Router } from "express";
-import AuthRouter from "./routes/auth";
-import PostsRouter from "./routes/posts";
-import UsersRouter from "./routes/users";
-import PetsRouter from "./routes/pets";
+import AuthRouter from "./auth";
+import PostsRouter from "./posts";
+import UsersRouter from "./users";
+import PetsRouter from "./pets";
 
 export default class ApiRouter {
-    public router: Router;
+    router = null;
 
     constructor () {
         this.router = Router();
@@ -13,6 +13,5 @@ export default class ApiRouter {
         this.router.use('/posts', PostsRouter);
         this.router.use('/users', UsersRouter);
         this.router.use('/pets', PetsRouter);
-
     }
 }

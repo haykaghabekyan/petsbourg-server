@@ -1,17 +1,17 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import Pet from "../models/pet";
 import requireAuth from "../utils/require-auth";
 
 class PetsRouter {
 
-    router: Router;
+    router = null;
 
     constructor() {
         this.router = Router();
         this.routes();
     }
 
-    async getPetTypes (req: Request, res: Response): Promise<any> {
+    static async getPetTypes (req, res) {
         const petTypes = await Pet.getPetTypes();
 
         res.send({
@@ -20,24 +20,24 @@ class PetsRouter {
         });
     }
 
-    async getPetBreeds (req: Request, res: Response): Promise<any> {
+    static async getPetBreeds (req, res) {
 
         const petBreeds = await Pet.getPetBreeds();
 
         res.send(petBreeds);
     }
 
-    async getUserPets(req: Request, res: Response): Promise<any> {
+    static async getUserPets(req, res) {
 
-        const { user } = req as any;
+        const { user } = req;
 
         const pets = await Pet.getUserPets(user.uid);
 
         res.send(pets);
     }
 
-    async create (req: Request, res: Response): Promise<void> {
-        const { user, body } = req as any;
+    static async create (req, res) {
+        const { user, body } = req;
 
         const data = {
             user,
@@ -60,11 +60,11 @@ class PetsRouter {
         });
     }
 
-    routes (): void {
-        this.router.post('/', requireAuth, this.create);
-        this.router.get('/', requireAuth, this.getUserPets);
-        this.router.get('/pet-types', this.getPetTypes);
-        this.router.get('/pet-breeds', this.getPetBreeds);
+    routes () {
+        this.router.post('/', requireAuth, PetsRouter.create);
+        this.router.get('/', requireAuth, PetsRouter.getUserPets);
+        this.router.get('/pet-types', PetsRouter.getPetTypes);
+        this.router.get('/pet-breeds', PetsRouter.getPetBreeds);
     }
 }
 

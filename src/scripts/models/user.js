@@ -5,7 +5,7 @@ const driver = neo4j.v1.driver("bolt://localhost:7687", neo4j.v1.auth.basic("neo
 const session = driver.session();
 
 class User {
-    static async userExists (email): Promise<object> {
+    static async userExists (email) {
         let user;
 
         try {
@@ -22,7 +22,7 @@ class User {
         return user;
     }
 
-    static async signUp ({ email, firstName, lastName, gender, password }): Promise<object> {
+    static async signUp ({ email, firstName, lastName, gender, password }) {
         const brcyptedPassword = await User.generateHash(password);
 
         const parameters = {
@@ -49,7 +49,7 @@ class User {
         return user;
     }
 
-    static async signIn ({ email, password }): Promise<object> {
+    static async signIn ({ email, password }) {
 
         const parameters = {
             email: email,

@@ -2,26 +2,26 @@
   "name": "petsbourg.com",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/scripts/index.js",
+  "main": "./src/scripts/index.js",
   "scripts": {
-    "build:dev": "tsc --outDir ./dist/scripts --watch",
-    "build:prod": "tsc --outDir ./dist/scripts",
-    "start:dev": "nodemon --watch ./dist/scripts",
-    "start": "node ./dist/scripts",
+    "start": "node ./src/scripts/index.js",
+    "start:dev": "nodemon ./dist/scripts/index.js",
+    "build:dev": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=es2015,stage-0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hayk Aghabekyan",
   "license": "ISC",
   "devDependencies": {
-    "@types/express": "^4.0.39",
-    "@types/morgan": "^1.7.35",
-    "nodemon": "^1.12.1",
-    "ts-loader": "^3.2.0",
-    "typescript": "^2.6.1"
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "nodemon": "^1.12.1"
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "babel-polyfill": "^6.26.0",
     "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.1.0",

@@ -1,12 +1,12 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import * as jwt from "jsonwebtoken";
 
 import User from "../models/user";
 import Pet from "../models/pet";
 
-import JWT_PUBLIC_KEY from "../../configs/jwt";
+import JWT_PUBLIC_KEY from "../configs/jwt";
 
-const signToken = (user): jwt => {
+const signToken = user => {
     return jwt.sign({
         user: user
     }, JWT_PUBLIC_KEY, {
@@ -16,20 +16,20 @@ const signToken = (user): jwt => {
 
 class AuthRouter {
 
-    router: Router;
+    router = null;
 
     constructor() {
         this.router = Router();
         this.routes();
     }
 
-    routes (): void {
+    routes () {
         this.router.post('/sign-in', AuthRouter.signIn);
         this.router.post('/sign-up', AuthRouter.signUp);
     }
 
-    static async signIn (req: Request, res: Response): Promise<Response> {
-        const user: any = await User.signIn(req.body);
+    static async signIn (req, res) {
+        const user = await User.signIn(req.body);
 
         if (user) {
             const pets = await Pet.getUserPets(user.uid);
@@ -48,7 +48,7 @@ class AuthRouter {
         }
     }
 
-    static async signUp (req: Request, res: Response): Promise<Response> {
+    static async signUp (req, res) {
         if (await User.userExists(req.body.email)) {
             return res.status(400).send({
                 success: false,

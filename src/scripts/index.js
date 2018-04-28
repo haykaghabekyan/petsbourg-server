@@ -1,21 +1,23 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as morgan from "morgan";
-import * as cors from "cors";
-import ApiRouter from "./api/router";
+import "babel-polyfill";
+
+import express from "express";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import cors from "cors";
+import ApiRouter from "./routes/router";
 
 class Server {
-    readonly port: Number;
-    private app: express.Application;
+    port = null;
+    app = null;
 
-    constructor (port: Number) {
+    constructor (port) {
         this.port = port;
         this.app = express();
         this.config();
         this.routes();
     }
 
-    private config () {
+    config () {
         // Log requests to console
         this.app.use(morgan('dev'));
 
@@ -26,14 +28,16 @@ class Server {
         }));
 
         this.app.use('error', Server.onError);
+    }
 
+    start() {
         this.app.listen(this.port, () => {
             console.log(`Server listening on port ${port}`);
         });
     }
 
-    private routes (): void {
-        const apiRouter: ApiRouter = new ApiRouter();
+    routes () {
+        const apiRouter = new ApiRouter();
 
         const corsOptions = {
             // origin: 'http://localhost:8081',
@@ -43,15 +47,15 @@ class Server {
         this.app.use('/api', cors(corsOptions), apiRouter.router);
     }
 
-    static onError(error: NodeJS.ErrnoException): void {
+    static onError(error) {
         if (error.syscall !== 'listen') throw error;
         let bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
         switch(error.code) {
-            case 'EACCES':
+            case "EACCES":
                 console.error(`${bind} requires elevated privileges`);
                 process.exit(1);
                 break;
-            case 'EADDRINUSE':
+            case "EADDRINUSE":
                 console.error(`${bind} is already in use`);
                 process.exit(1);
                 break;
@@ -61,6 +65,7 @@ class Server {
     }
 }
 
-const port: Number = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3000;
 
-new Server(port);
+const server = new Server(port);
+server.start();

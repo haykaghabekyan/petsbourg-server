@@ -14,7 +14,7 @@ class Pet {
         try {
             const results = await session.run("MATCH (petBreed:PetBreed)-[r]-(petType:PetType) RETURN petBreed, petType");
             results.records.forEach(record => {
-                const rec = (record.toObject() as any);
+                const rec = record.toObject();
 
                 petTypes[rec.petType.properties.name] = petTypes[rec.petType.properties.name] || [];
 
@@ -44,7 +44,7 @@ class Pet {
         return petBreeds;
     }
 
-    static async getUserPets(uid: string) {
+    static async getUserPets(uid) {
         let pets;
 
         const parameters = {
@@ -63,7 +63,7 @@ class Pet {
         return pets;
     }
 
-    static async addPet({ pet, user }): Promise<object> {
+    static async addPet({ pet, user }) {
         // const { uid } = user;
         // const { type, breed, gender, name } = pet;
 
@@ -84,7 +84,6 @@ class Pet {
 
         return pet;
     }
-
 
 }
 

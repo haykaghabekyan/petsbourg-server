@@ -1,23 +1,16 @@
 import * as jwt from "jsonwebtoken";
-import JWT_PUBLIC_KEY from "../../configs/jwt";
+import JWT_PUBLIC_KEY from "../configs/jwt";
 
 const requireToken = (req, res, next) => {
     if (req.headers.authorization) {
         const bearer = req.headers.authorization.split(" ");
-
-        console.log(bearer);
-
         const jwtToken = bearer[1];
 
         let decoded;
-
         try {
-
-            console.log(jwtToken);
-
             decoded = jwt.verify(jwtToken, JWT_PUBLIC_KEY);
         } catch (error) {
-            console.log(error);
+            console.log("error", error);
             decoded = null;
         }
 
