@@ -1,8 +1,8 @@
 import { Router } from "express";
 import * as jwt from "jsonwebtoken";
 
-import User from "../models/user";
-import Pet from "../models/pet";
+import User from "../models-neo4j/user";
+import Pet from "../models-neo4j/pet";
 
 import JWT_PUBLIC_KEY from "../configs/jwt";
 

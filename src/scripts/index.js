@@ -10,8 +10,7 @@ class Server {
     port = null;
     app = null;
 
-    constructor (port) {
-        this.port = port;
+    constructor () {
         this.app = express();
         this.config();
         this.routes();
@@ -30,8 +29,8 @@ class Server {
         this.app.use('error', Server.onError);
     }
 
-    start() {
-        this.app.listen(this.port, () => {
+    start(port) {
+        this.app.listen(port, () => {
             console.log(`Server listening on port ${port}`);
         });
     }
@@ -67,5 +66,5 @@ class Server {
 
 const port = Number(process.env.PORT) || 3000;
 
-const server = new Server(port);
-server.start();
+const server = new Server();
+server.start(port);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Pet from "../models/pet";
+import Pet from "../models-neo4j/pet";
 import requireAuth from "../utils/require-auth";
 
 class PetsRouter {
