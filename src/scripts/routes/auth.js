@@ -59,7 +59,6 @@ class AuthRouter {
             } else {
                 res.status(400).send({
                     success: false,
-                    message: "User not found. Check your credentials.",
                     errors: {
                         password: "Please check your password."
                     }
@@ -70,7 +69,6 @@ class AuthRouter {
         } catch (error) {
             res.status(400).send({
                 success: false,
-                message: "User not found. Check your credentials.",
                 errors: {
                     email: "User not found. Check your credentials."
                 }
