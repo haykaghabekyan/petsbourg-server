@@ -1,8 +1,8 @@
 import { Router } from "express";
 import * as jwt from "jsonwebtoken";
+import Sequelize from "sequelize";
 
-import User from "../models-neo4j/user";
-import Pet from "../models-neo4j/pet";
+import { User } from "../db/models/index";
 
 import JWT_PUBLIC_KEY from "../configs/jwt";
 
@@ -29,45 +29,84 @@ class AuthRouter {
     }
 
     static async signIn (req, res) {
-        const user = await User.signIn(req.body);
 
-        if (user) {
-            const pets = await Pet.getUserPets(user.uid);
 
-            res.status(201).json({
-                success: true,
-                message: 'Signed in successfully.',
-                token: signToken(user),
-                pets: pets,
+        const {email, password} = req.body;
+
+        try {
+            const user = await User.findOne({
+                where: {
+                    [Sequelize.Op.or]: [{
+                        email: email
+                    }, {
+                        username: email
+                    }]
+                }
             });
-        } else {
-            return res.status(400).send({
+
+            if (user.validPassword(password)) {
+                res.send({
+                    success: true,
+                    token: signToken({
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        username: user.username,
+                        gender: user.gender,
+                    })
+                });
+            } else {
+                res.status(400).send({
+                    success: false,
+                    errors: {
+                        password: "Please check your password."
+                    }
+                });
+            }
+
+
+        } catch (error) {
+            res.status(400).send({
                 success: false,
-                message: 'User not found. Check your credentials.',
+                errors: {
+                    email: "User not found. Check your credentials."
+                }
             });
         }
     }
 
     static async signUp (req, res) {
-        if (await User.userExists(req.body.email)) {
-            return res.status(400).send({
-                success: false,
-                message: 'Email already in use.',
-            });
-        }
 
-        const user = await User.signUp(req.body);
+        const splittedEmail = req.body.email.split("@");
 
-        if (user) {
-            res.status(201).json({
+        const userData = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            username: splittedEmail[0],
+            password: req.body.password,
+            gender: req.body.gender,
+        };
+
+        try {
+            const userUser = await User.create(userData);
+
+            res.send({
                 success: true,
-                message: 'Congrats! You have signed up successfully.',
-                token: signToken(user),
             });
-        } else {
-            return res.status(400).send({
+
+        } catch (error) {
+            let errors = {};
+            if (error.errors) {
+                error.errors.forEach(error => {
+                    errors[error.path] = error.message;
+                });
+            }
+
+            res.status(404).send({
                 success: false,
-                message: 'Something went wrong. Please try later.',
+                errors: errors,
             });
         }
     }
