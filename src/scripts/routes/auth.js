@@ -90,10 +90,18 @@ class AuthRouter {
         };
 
         try {
-            const userUser = await User.create(userData);
+            const user = await User.create(userData);
 
             res.send({
                 success: true,
+                token: signToken({
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    username: user.username,
+                    gender: user.gender,
+                })
             });
 
         } catch (error) {
