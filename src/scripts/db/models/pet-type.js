@@ -9,6 +9,10 @@ export default (sequelize, DataTypes) => {
     PetType.associate = function (models) {
         // associations can be defined here
 
+        PetType.hasMany(models.PetBreed, {
+            foreignKey: 'petTypeId',
+        });
+
     };
 
     return PetType;

@@ -1,17 +1,22 @@
 export default {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable("PetBreed", {
+        return queryInterface.createTable("Pets", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            petTypeId: {
-                type: Sequelize.INTEGER,
-                unique: true
-            },
             name: {
+                type: Sequelize.STRING
+            },
+            petTypeId: {
+                type: Sequelize.INTEGER
+            },
+            petBreedId: {
+                type: Sequelize.INTEGER
+            },
+            gender: {
                 type: Sequelize.STRING
             },
             createdAt: {
@@ -25,6 +30,6 @@ export default {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable("PetBreed");
+        return queryInterface.dropTable("Pets");
     }
 };

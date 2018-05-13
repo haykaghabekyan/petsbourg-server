@@ -1,6 +1,6 @@
 export default {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable("PetType", {
+        return queryInterface.createTable("PetTypes", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -21,6 +21,6 @@ export default {
         });
     },
     down: (queryInterface, Sequelize) => {
-        return queryInterface.dropTable("PetType");
+        return queryInterface.dropTable("PetTypes");
     }
 };

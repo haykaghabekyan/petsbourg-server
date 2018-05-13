@@ -2,7 +2,9 @@ import { Router } from "express";
 import * as jwt from "jsonwebtoken";
 import Sequelize from "sequelize";
 
-import { User } from "../db/models/index";
+import models from "../db/models/index";
+
+const { User } = models;
 
 import JWT_PUBLIC_KEY from "../configs/jwt";
 

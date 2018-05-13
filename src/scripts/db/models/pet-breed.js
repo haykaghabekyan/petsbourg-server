@@ -1,8 +1,12 @@
 export default (sequelize, DataTypes) => {
 
     const PetBreed = sequelize.define('PetBreed', {
-        petTypeId: DataTypes.INTEGER,
-        name: DataTypes.STRING,
+        petTypeId: {
+            type: DataTypes.INTEGER
+        },
+        name: {
+            type: DataTypes.STRING
+        },
     }, {
         
     });

@@ -63,6 +63,10 @@ export default (sequelize, DataTypes) => {
 
     User.associate = function (models) {
         // associations can be defined here
+
+        User.hasMany(models.Pet, {
+            foreignKey: 'user_id',
+        })
     };
 
     User.prototype.validPassword = function(password) {
