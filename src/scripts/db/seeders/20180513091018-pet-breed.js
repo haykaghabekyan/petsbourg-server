@@ -17,6 +17,8 @@ export default {
                     data.push({
                         petTypeId: breed.petTypeId,
                         name: breed.name,
+                        createdAt: new Date(),
+                        updatedAt: new Date()
                     });
                 }
             });
