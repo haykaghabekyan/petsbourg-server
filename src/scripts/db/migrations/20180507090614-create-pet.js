@@ -7,6 +7,9 @@ export default {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
+            userId: {
+                type: Sequelize.STRING
+            },
             name: {
                 type: Sequelize.STRING
             },

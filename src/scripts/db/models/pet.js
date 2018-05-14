@@ -1,6 +1,10 @@
 export default (sequelize, DataTypes) => {
 
     const Pet = sequelize.define('Pet', {
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
         name: {
             type: DataTypes.STRING,
             validate: {
@@ -30,11 +34,15 @@ export default (sequelize, DataTypes) => {
             }
         }
     }, {
-
+        //..
     });
 
     Pet.associate = function (models) {
         // associations can be defined here
+
+        Pet.hasOne(models.PetType, {
+            foreignKey: 'id',
+        })
     };
 
     return Pet;

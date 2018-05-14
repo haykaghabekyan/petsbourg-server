@@ -1,7 +1,7 @@
 import { Router } from "express";
 import requireAuth from "../utils/require-auth";
 import models from "../db/models/index";
-const { PetType, PetBreed } = models;
+const { Pet, PetType, PetBreed } = models;
 
 class PetsRouter {
 
@@ -29,58 +29,40 @@ class PetsRouter {
 
         } catch (error) {
             console.log(error);
-            res.send({
+            res.status(400).send({
                 success: false,
                 error: error
             });
         }
     }
 
-    // static async getPetBreeds (req, res) {
-    //
-    //     const petBreeds = await PetType.getPetBreeds();
-    //
-    //     res.send(petBreeds);
-    // }
+    static async create (req, res) {
+        const { user, body } = req;
 
-    // static async getUserPets(req, res) {
-    //
-    //     const { user } = req;
-    //
-    //     const pets = await Pet.getUserPets(user.uid);
-    //
-    //     res.send(pets);
-    // }
+        try {
+            const pet = await Pet.create({
+                userId: user.id,
+                name: body.name,
+                petTypeId: body.type,
+                petBreedId: body.breed,
+                gender: body.gender,
+            });
 
-    // static async create (req, res) {
-    //     const { user, body } = req;
-    //
-    //     const data = {
-    //         user,
-    //         pet: {
-    //             ...body
-    //         },
-    //     };
-    //
-    //     let pet = null;
-    //
-    //     try {
-    //         pet = await Pet.addPet(data);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    //
-    //     res.send({
-    //         success: true,
-    //         pet: pet,
-    //     });
-    // }
+            res.send({
+                success: true,
+                pet: pet,
+            });
+        } catch (error) {
+            res.send({
+                success: false,
+                msg: "Something went wrong, please try later.",
+            });
+        }
+    }
 
     routes () {
-        // this.router.post('/', requireAuth, PetsRouter.create);
-        // this.router.get('/', requireAuth, PetsRouter.getUserPets);
+        this.router.post('/', requireAuth, PetsRouter.create);
         this.router.get('/pet-types', PetsRouter.getPetTypes);
-        // this.router.get('/pet-breeds', PetsRouter.getPetBreeds);
     }
 }
 

@@ -65,7 +65,7 @@ export default (sequelize, DataTypes) => {
         // associations can be defined here
 
         User.hasMany(models.Pet, {
-            foreignKey: 'user_id',
+            foreignKey: 'userId',
         })
     };
 
