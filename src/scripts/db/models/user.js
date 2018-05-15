@@ -66,7 +66,8 @@ export default (sequelize, DataTypes) => {
 
         User.hasMany(models.Pet, {
             foreignKey: 'userId',
-        })
+        });
+
     };
 
     User.prototype.validPassword = function(password) {

@@ -40,9 +40,18 @@ export default (sequelize, DataTypes) => {
     Pet.associate = function (models) {
         // associations can be defined here
 
-        Pet.hasOne(models.PetType, {
-            foreignKey: 'id',
-        })
+        Pet.belongsTo(models.User, {
+            foreignKey: "userId"
+        });
+
+        Pet.belongsTo(models.PetType, {
+            foreignKey: "petTypeId"
+        });
+
+        Pet.belongsTo(models.PetBreed, {
+            foreignKey: "petBreedId"
+        });
+
     };
 
     return Pet;

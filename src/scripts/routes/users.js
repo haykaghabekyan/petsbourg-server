@@ -2,7 +2,7 @@ import { Router } from "express";
 import requireAuth from "../utils/require-auth";
 import models from "../db/models/index";
 
-const { Pet, PetType } = models;
+const { User, Pet, PetType } = models;
 
 class UsersRouter {
 
@@ -11,6 +11,35 @@ class UsersRouter {
     constructor() {
         this.router = Router();
         this.routes();
+    }
+
+    static async getUserWithPets (req, res) {
+
+        const { params: { userId } } = req;
+
+        try {
+            const user = await User.findOne({
+                where: {
+                    id: userId,
+                },
+                include: [{
+                    model: Pet
+                }]
+            });
+
+            res.send({
+                success: true,
+                user: user,
+            });
+        } catch (e) {
+            console.log("error", e);
+
+            res.status(400).send({
+                success: false,
+                msg: "Something went wrong. Please try later."
+            })
+        }
+
     }
 
     static async getUserPets (req, res) {
@@ -28,11 +57,9 @@ class UsersRouter {
                 }],
             });
 
-            console.log("pets", pets);
-
             res.send({
                 success: true,
-                userPets: pets,
+                pets
             });
 
         } catch (error) {
@@ -47,6 +74,7 @@ class UsersRouter {
     }
 
     routes () {
+        this.router.get('/:userId', UsersRouter.getUserWithPets);
         this.router.get('/:userId/pets', UsersRouter.getUserPets);
     }
 }

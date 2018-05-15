@@ -21,7 +21,7 @@ const requireToken = (req, res, next) => {
             });
         }
 
-        req.user = decoded.user;
+        req.user = decoded.profile;
 
         next();
     } else {

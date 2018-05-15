@@ -8,16 +8,31 @@ export default {
                 type: Sequelize.INTEGER
             },
             userId: {
-                type: Sequelize.STRING
+                type: Sequelize.INTEGER,
+                foreignKey: true,
+                references: {
+                    model: "Users",
+                    key: "id",
+                }
             },
             name: {
                 type: Sequelize.STRING
             },
             petTypeId: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                foreignKey: true,
+                references: {
+                    model: "PetTypes",
+                    key: "id",
+                }
             },
             petBreedId: {
-                type: Sequelize.INTEGER
+                type: Sequelize.INTEGER,
+                foreignKey: true,
+                references: {
+                    model: "PetBreeds",
+                    key: "id",
+                }
             },
             gender: {
                 type: Sequelize.STRING

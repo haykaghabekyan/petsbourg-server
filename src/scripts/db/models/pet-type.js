@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
         // associations can be defined here
 
         PetType.hasMany(models.PetBreed, {
-            foreignKey: 'petTypeId',
+            foreignKey: "petTypeId",
         });
 
     };

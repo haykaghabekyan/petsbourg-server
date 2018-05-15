@@ -28,7 +28,7 @@ class PetsRouter {
             });
 
         } catch (error) {
-            console.log(error);
+            console.log("error", error);
             res.status(400).send({
                 success: false,
                 error: error
@@ -53,7 +53,9 @@ class PetsRouter {
                 pet: pet,
             });
         } catch (error) {
-            res.send({
+            console.log("error", error);
+
+            res.status(400).send({
                 success: false,
                 msg: "Something went wrong, please try later.",
             });

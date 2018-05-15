@@ -4,13 +4,13 @@ import Sequelize from "sequelize";
 
 import models from "../db/models/index";
 
-const { User } = models;
+const { User, Pet, PetType } = models;
 
 import JWT_PUBLIC_KEY from "../configs/jwt";
 
-const signToken = user => {
+const signToken = data => {
     return jwt.sign({
-        user: user
+        ...data
     }, JWT_PUBLIC_KEY, {
         expiresIn: 60 * 60
     });
@@ -32,7 +32,6 @@ class AuthRouter {
 
     static async signIn (req, res) {
 
-
         const {email, password} = req.body;
 
         try {
@@ -43,19 +42,28 @@ class AuthRouter {
                     }, {
                         username: email
                     }]
-                }
+                },
+                include: [{
+                    model: Pet,
+                    include: [{
+                        model: PetType
+                    }]
+                }],
             });
 
             if (user.validPassword(password)) {
                 res.send({
                     success: true,
                     token: signToken({
-                        id: user.id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email,
-                        username: user.username,
-                        gender: user.gender,
+                        profile: {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            email: user.email,
+                            username: user.username,
+                            gender: user.gender,
+                        },
+                        pets: user.Pets ? user.Pets : null,
                     })
                 });
             } else {
@@ -66,7 +74,6 @@ class AuthRouter {
                     }
                 });
             }
-
 
         } catch (error) {
             res.status(400).send({
@@ -79,30 +86,32 @@ class AuthRouter {
     }
 
     static async signUp (req, res) {
-
-        const splittedEmail = req.body.email.split("@");
-
-        const userData = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            username: splittedEmail[0],
-            password: req.body.password,
-            gender: req.body.gender,
-        };
-
         try {
+            const splittedEmail = req.body.email.split("@");
+
+            const userData = {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                username: splittedEmail[0],
+                password: req.body.password,
+                gender: req.body.gender,
+            };
+
             const user = await User.create(userData);
 
             res.send({
                 success: true,
                 token: signToken({
-                    id: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    username: user.username,
-                    gender: user.gender,
+                    profile: {
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        username: user.username,
+                        gender: user.gender,
+                    },
+                    pets: null,
                 })
             });
 
