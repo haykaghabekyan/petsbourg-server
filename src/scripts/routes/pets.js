@@ -19,7 +19,9 @@ class PetsRouter {
                 include: [{
                     model: PetBreed,
                     // as: 'Breed'
+                    attributes: ["id", "name"]
                 }],
+                attributes: ["id", "name"]
             });
 
             res.send({
@@ -28,10 +30,10 @@ class PetsRouter {
             });
 
         } catch (error) {
-            console.log("error", error);
+            console.error(error);
             res.status(400).send({
                 success: false,
-                error: error
+                msg: "Something went wrong while getting pet types."
             });
         }
     }

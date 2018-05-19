@@ -47,7 +47,8 @@ class AuthRouter {
                     model: Pet,
                     include: [{
                         model: PetType
-                    }]
+                    }],
+                    attributes: ["id", "name", "gender"]
                 }],
             });
 
@@ -62,6 +63,7 @@ class AuthRouter {
                             email: user.email,
                             username: user.username,
                             gender: user.gender,
+                            Pets: user.Pets,
                         },
                         pets: user.Pets ? user.Pets : null,
                     })

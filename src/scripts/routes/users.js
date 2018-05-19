@@ -22,8 +22,12 @@ class UsersRouter {
                 where: {
                     id: userId,
                 },
+                attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
                 include: [{
-                    model: Pet
+                    model: Pet,
+                    include: [{
+                        model: PetType
+                    }]
                 }]
             });
 
@@ -31,12 +35,12 @@ class UsersRouter {
                 success: true,
                 user: user,
             });
-        } catch (e) {
-            console.log("error", e);
+        } catch (error) {
+            // console.error(error);
 
             res.status(400).send({
                 success: false,
-                msg: "Something went wrong. Please try later."
+                msg: "Something went wrong while getting user with pets."
             })
         }
 
