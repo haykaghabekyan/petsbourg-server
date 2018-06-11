@@ -65,7 +65,6 @@ class AuthRouter {
                             gender: user.gender,
                             Pets: user.Pets,
                         },
-                        pets: user.Pets ? user.Pets : null,
                     })
                 });
             } else {
@@ -112,8 +111,8 @@ class AuthRouter {
                         email: user.email,
                         username: user.username,
                         gender: user.gender,
+                        Pets: []
                     },
-                    pets: null,
                 })
             });
 
