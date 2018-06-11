@@ -1,7 +1,7 @@
 import { Router } from "express";
 import requireAuth from "../utils/require-auth";
 import models from "../db/models/index";
-const { Pet, PetType, PetBreed } = models;
+const { Pet, PetType, PetBreed, User } = models;
 
 class PetsRouter {
 
@@ -12,16 +12,51 @@ class PetsRouter {
         this.routes();
     }
 
-    static async getPetTypes (req, res) {
+    static async get(req, res) {
+        const { params: { petId } } = req;
 
         try {
+            const user = await User.findOne({
+                attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
+                include: [{
+                    where: {
+                        id: petId,
+                    },
+                    model: Pet,
+                    attributes: ["id", "petTypeId", "name", "gender"],
+                    include: [{
+                        model: PetType,
+                        attributes: ["id", "name"],
+                    }, {
+                        model: PetBreed,
+                        attributes: ["id", "name"],
+                    }],
+                }],
+            });
+
+            res.send({
+                success: true,
+                user: user,
+            });
+
+        } catch (error) {
+            // console.log(error);
+
+            res.status(400).send({
+                success: false,
+                msg: "Something went wrong while getting pet."
+            });
+        }
+    }
+
+    static async getPetTypes(req, res) {
+        try {
             const petTypes = await PetType.findAll({
+                attributes: ["id", "name"],
                 include: [{
                     model: PetBreed,
-                    // as: 'Breed'
                     attributes: ["id", "name"]
                 }],
-                attributes: ["id", "name"]
             });
 
             res.send({
@@ -30,7 +65,8 @@ class PetsRouter {
             });
 
         } catch (error) {
-            console.error(error);
+            // console.error(error);
+
             res.status(400).send({
                 success: false,
                 msg: "Something went wrong while getting pet types."
@@ -38,7 +74,7 @@ class PetsRouter {
         }
     }
 
-    static async create (req, res) {
+    static async create(req, res) {
         const { user, body } = req;
 
         try {
@@ -55,7 +91,7 @@ class PetsRouter {
                 pet: pet,
             });
         } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
 
             res.status(400).send({
                 success: false,
@@ -65,8 +101,9 @@ class PetsRouter {
     }
 
     routes () {
-        this.router.post('/', requireAuth, PetsRouter.create);
         this.router.get('/pet-types', PetsRouter.getPetTypes);
+        this.router.get('/:petId', PetsRouter.get);
+        this.router.post('/', requireAuth, PetsRouter.create);
     }
 }
 

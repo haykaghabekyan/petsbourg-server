@@ -41,15 +41,15 @@ export default (sequelize, DataTypes) => {
         // associations can be defined here
 
         Pet.belongsTo(models.User, {
-            foreignKey: "userId"
+            foreignKey: "userId",
         });
 
         Pet.belongsTo(models.PetType, {
-            foreignKey: "petTypeId"
+            foreignKey: "petTypeId",
         });
 
         Pet.belongsTo(models.PetBreed, {
-            foreignKey: "petBreedId"
+            foreignKey: "petBreedId",
         });
 
     };

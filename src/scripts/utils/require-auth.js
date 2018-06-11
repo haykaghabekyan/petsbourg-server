@@ -10,7 +10,7 @@ const requireToken = (req, res, next) => {
         try {
             decoded = jwt.verify(jwtToken, JWT_PUBLIC_KEY);
         } catch (error) {
-            console.log("error", error);
+            // console.error(error);
             decoded = null;
         }
 

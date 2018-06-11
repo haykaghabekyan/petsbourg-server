@@ -1,8 +1,7 @@
 import { Router } from "express";
-import requireAuth from "../utils/require-auth";
 import models from "../db/models/index";
 
-const { User, Pet, PetType } = models;
+const { User, Pet, PetType, PetBreed } = models;
 
 class UsersRouter {
 
@@ -13,7 +12,7 @@ class UsersRouter {
         this.routes();
     }
 
-    static async getUserWithPets (req, res) {
+    static async get(req, res) {
 
         const { params: { userId } } = req;
 
@@ -25,10 +24,15 @@ class UsersRouter {
                 attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
                 include: [{
                     model: Pet,
+                    attributes: ["id", "petTypeId", "name", "gender"],
                     include: [{
-                        model: PetType
-                    }]
-                }]
+                        model: PetType,
+                        attributes: ["id", "name"],
+                    }, {
+                        model: PetBreed,
+                        attributes: ["id", "name"],
+                    }],
+                }],
             });
 
             res.send({
@@ -36,7 +40,7 @@ class UsersRouter {
                 user: user,
             });
         } catch (error) {
-            // console.error(error);
+            console.error(error);
 
             res.status(400).send({
                 success: false,
@@ -46,40 +50,8 @@ class UsersRouter {
 
     }
 
-    static async getUserPets (req, res) {
-
-        const { params: { userId } } = req;
-
-        try {
-            const pets = await Pet.findAll({
-                where: {
-                    userId: userId
-                },
-                include: [{
-                    model: PetType,
-                    // as: 'petType'
-                }],
-            });
-
-            res.send({
-                success: true,
-                pets
-            });
-
-        } catch (error) {
-            // console.log("error", error);
-
-            res.status(400).send({
-                success: false,
-                msg: "Something went wrong.",
-            });
-        }
-
-    }
-
     routes () {
-        this.router.get('/:userId', UsersRouter.getUserWithPets);
-        this.router.get('/:userId/pets', UsersRouter.getUserPets);
+        this.router.get('/:userId', UsersRouter.get);
     }
 }
 
