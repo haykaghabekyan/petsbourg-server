@@ -35,7 +35,7 @@ class UsersRouter {
                 }],
             });
 
-            res.send({
+            res.status(200).send({
                 success: true,
                 user: user,
             });

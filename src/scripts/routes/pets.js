@@ -34,7 +34,7 @@ class PetsRouter {
                 }],
             });
 
-            res.send({
+            res.status(200).send({
                 success: true,
                 user: user,
             });
@@ -59,7 +59,7 @@ class PetsRouter {
                 }],
             });
 
-            res.send({
+            res.status(200).send({
                 success: true,
                 petTypes: petTypes
             });
@@ -86,7 +86,7 @@ class PetsRouter {
                 gender: body.gender,
             });
 
-            res.send({
+            res.status(200).send({
                 success: true,
                 pet: pet,
             });
