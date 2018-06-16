@@ -16,19 +16,28 @@ class PetsRouter {
         const { params: { petId } } = req;
 
         try {
+            const pet = await Pet.findOne({
+                where: {
+                    id: petId,
+                },
+                model: Pet,
+                attributes: ["id", "userId", "petTypeId", "name", "gender"],
+                include: [{
+                    model: PetType,
+                    attributes: ["id", "name"],
+                }],
+            });
+
             const user = await User.findOne({
+                where: {
+                    id: pet.userId,
+                },
                 attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
                 include: [{
-                    where: {
-                        id: petId,
-                    },
                     model: Pet,
                     attributes: ["id", "petTypeId", "name", "gender"],
                     include: [{
                         model: PetType,
-                        attributes: ["id", "name"],
-                    }, {
-                        model: PetBreed,
                         attributes: ["id", "name"],
                     }],
                 }],
@@ -36,6 +45,7 @@ class PetsRouter {
 
             res.status(200).send({
                 success: true,
+                pet: pet,
                 user: user,
             });
 

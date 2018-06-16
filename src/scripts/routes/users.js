@@ -24,12 +24,9 @@ class UsersRouter {
                 attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
                 include: [{
                     model: Pet,
-                    attributes: ["id", "petTypeId", "name", "gender"],
+                    attributes: ["id", "name", "gender"],
                     include: [{
                         model: PetType,
-                        attributes: ["id", "name"],
-                    }, {
-                        model: PetBreed,
                         attributes: ["id", "name"],
                     }],
                 }],
