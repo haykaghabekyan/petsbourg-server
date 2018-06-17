@@ -21,9 +21,12 @@ class PetsRouter {
                     id: petId,
                 },
                 model: Pet,
-                attributes: ["id", "userId", "petTypeId", "name", "gender"],
+                attributes: ["id", "userId", "name", "gender"],
                 include: [{
                     model: PetType,
+                    attributes: ["id", "name"],
+                }, {
+                    model: PetBreed,
                     attributes: ["id", "name"],
                 }],
             });
@@ -84,16 +87,35 @@ class PetsRouter {
         }
     }
 
+    static async update(req ,res) {
+        res.send(req.body);
+    }
+
     static async create(req, res) {
         const { user, body } = req;
 
         try {
-            const pet = await Pet.create({
+            const createdPet = await Pet.create({
                 userId: user.id,
                 name: body.name,
                 petTypeId: body.type,
                 petBreedId: body.breed,
                 gender: body.gender,
+            });
+
+            const pet = await Pet.findOne({
+                where: {
+                    id: createdPet.id,
+                },
+                model: Pet,
+                attributes: ["id", "userId", "name", "gender"],
+                include: [{
+                    model: PetType,
+                    attributes: ["id", "name"],
+                }, {
+                    model: PetBreed,
+                    attributes: ["id", "name"],
+                }],
             });
 
             res.status(200).send({
@@ -113,6 +135,7 @@ class PetsRouter {
     routes () {
         this.router.get('/pet-types', PetsRouter.getPetTypes);
         this.router.get('/:petId', PetsRouter.get);
+        this.router.put('/:petId', PetsRouter.update);
         this.router.post('/', requireAuth, PetsRouter.create);
     }
 }
