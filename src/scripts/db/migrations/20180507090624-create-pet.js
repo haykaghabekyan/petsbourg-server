@@ -35,16 +35,31 @@ export default {
                 }
             },
             gender: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+            },
+            story: {
+                type: Sequelize.TEXT,
+            },
+            passportId: {
+                type: Sequelize.STRING,
+            },
+            color: {
+                type: Sequelize.STRING,
+            },
+            size: {
+                type: Sequelize.STRING,
+            },
+            birthday: {
+                type: Sequelize.DATE,
             },
             createdAt: {
+                type: Sequelize.DATE,
                 allowNull: false,
-                type: Sequelize.DATE
             },
             updatedAt: {
+                type: Sequelize.DATE,
                 allowNull: false,
-                type: Sequelize.DATE
-            }
+            },
         });
     },
     down: (queryInterface, Sequelize) => {

@@ -32,7 +32,22 @@ export default (sequelize, DataTypes) => {
                     msg: "Please choose your pets gender."
                 },
             }
-        }
+        },
+        story: {
+            type: DataTypes.TEXT,
+        },
+        passportId: {
+            type: DataTypes.INTEGER,
+        },
+        color: {
+            type: DataTypes.INTEGER,
+        },
+        size: {
+            type: DataTypes.INTEGER,
+        },
+        birthday: {
+            type: DataTypes.DATE,
+        },
     }, {
         //..
     });

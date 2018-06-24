@@ -21,7 +21,7 @@ class PetsRouter {
                     id: petId,
                 },
                 model: Pet,
-                attributes: ["id", "userId", "name", "gender"],
+                attributes: ["id", "userId", "name", "gender", "story", "color", "size", "birthday", "passportId"],
                 include: [{
                     model: PetType,
                     attributes: ["id", "name"],
@@ -88,7 +88,52 @@ class PetsRouter {
     }
 
     static async update(req ,res) {
-        res.send(req.body);
+
+        const { petId } = req.params;
+
+        const {
+            name,
+            type,
+            breed,
+            passportId,
+            gender,
+            story = "",
+            color = "",
+            birthday,
+            size = "",
+        } = req.body;
+
+        try {
+
+            const pet = Pet.update({
+                name: name,
+                type: type,
+                breed: breed,
+                gender: gender,
+                story: story,
+                passportId: passportId,
+                color: color,
+                size: size,
+                birthday: birthday ? new Date(birthday) : "",
+            }, {
+                where: {
+                    id: petId,
+                },
+            });
+
+            res.send({
+                petId: petId,
+                pet: req.body,
+            });
+
+        } catch(error) {
+            console.log("error", error);
+
+            res.status(400).send({
+                success: false,
+                msg: "Something went wrong, please try later.",
+            });
+        }
     }
 
     static async create(req, res) {

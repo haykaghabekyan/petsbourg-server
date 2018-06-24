@@ -1,30 +1,29 @@
 module.exports = {
     development: {
         database: "petsbourg",
-        username: "postgres",
+        username: "haykaghabekyan",
         password: "vayquara",
-        dialect: "postgres",
         options: {
             host: "127.0.0.1",
-            dialect: "postgres"
+            dialect: "postgres",
         }
     },
     test: {
         database: "petsbourg",
-        username: "postgres",
+        username: "haykaghabekyan",
         password: "vayquara",
         options: {
             host: "127.0.0.1",
-            dialect: "postgres"
+            dialect: "postgres",
         }
     },
     production: {
         database: "petsbourg",
-        username: "postgres",
+        username: "haykaghabekyan",
         password: "vayquara",
         options: {
             host: "127.0.0.1",
-            dialect: "postgres"
+            dialect: "postgres",
         }
     }
 };

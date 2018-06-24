@@ -48,7 +48,7 @@ class AuthRouter {
                     include: [{
                         model: PetType
                     }],
-                    attributes: ["id", "name", "gender"]
+                    attributes: ["id", "name", "gender", "story"]
                 }],
             });
 
