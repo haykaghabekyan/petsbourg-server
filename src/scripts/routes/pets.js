@@ -88,8 +88,10 @@ class PetsRouter {
     }
 
     static async update(req ,res) {
+        console.log(req.user);
 
         const { petId } = req.params;
+        const { id } = req.user;
 
         const {
             name,
@@ -105,7 +107,7 @@ class PetsRouter {
 
         try {
 
-            const pet = Pet.update({
+            const pet = await Pet.update({
                 name: name,
                 type: type,
                 breed: breed,
@@ -118,12 +120,16 @@ class PetsRouter {
             }, {
                 where: {
                     id: petId,
+                    userId: id,
                 },
+                attributes: ["id", "name"],
+                returning: true,
+                limit: 1,
             });
 
             res.send({
                 petId: petId,
-                pet: req.body,
+                pet: pet,
             });
 
         } catch(error) {
@@ -180,7 +186,7 @@ class PetsRouter {
     routes () {
         this.router.get('/pet-types', PetsRouter.getPetTypes);
         this.router.get('/:petId', PetsRouter.get);
-        this.router.put('/:petId', PetsRouter.update);
+        this.router.put('/:petId', requireAuth, PetsRouter.update);
         this.router.post('/', requireAuth, PetsRouter.create);
     }
 }

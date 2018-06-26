@@ -6,10 +6,6 @@ class PostsRouter {
 
     constructor() {
         this.router = Router();
-        this.routes();
-    }
-    routes () {
-
     }
 }
 

@@ -22,10 +22,6 @@ class AuthRouter {
 
     constructor() {
         this.router = Router();
-        this.routes();
-    }
-
-    routes () {
         this.router.post('/sign-in', AuthRouter.signIn);
         this.router.post('/sign-up', AuthRouter.signUp);
     }
@@ -48,7 +44,7 @@ class AuthRouter {
                     include: [{
                         model: PetType
                     }],
-                    attributes: ["id", "name", "gender", "story"]
+                    attributes: ["id", "name"]
                 }],
             });
 

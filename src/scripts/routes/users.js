@@ -9,7 +9,7 @@ class UsersRouter {
 
     constructor() {
         this.router = Router();
-        this.routes();
+        this.router.get('/:userId', UsersRouter.get);
     }
 
     static async get(req, res) {
@@ -45,10 +45,6 @@ class UsersRouter {
             })
         }
 
-    }
-
-    routes () {
-        this.router.get('/:userId', UsersRouter.get);
     }
 }
 

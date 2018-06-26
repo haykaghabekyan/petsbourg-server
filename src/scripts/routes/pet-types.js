@@ -8,7 +8,7 @@ class PetsRouter {
 
     constructor() {
         this.router = Router();
-        this.routes();
+        this.router.get('/', PetsRouter.get);
     }
 
     static async get(req, res) {
@@ -40,9 +40,6 @@ class PetsRouter {
 
     }
 
-    routes () {
-        this.router.get('/', PetsRouter.get);
-    }
 }
 
 export default (new PetsRouter()).router;
