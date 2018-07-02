@@ -35,7 +35,7 @@ class PetsRouter {
                 where: {
                     id: pet.userId,
                 },
-                attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
+                attributes: ["id", "firstName", "lastName", "email", "gender"],
                 include: [{
                     model: Pet,
                     attributes: ["id", "petTypeId", "name", "gender"],
@@ -87,36 +87,13 @@ class PetsRouter {
         }
     }
 
-    static async update(req ,res) {
-        console.log(req.user);
-
-        const { petId } = req.params;
-        const { id } = req.user;
-
-        const {
-            name,
-            type,
-            breed,
-            passportId,
-            gender,
-            story = "",
-            color = "",
-            birthday,
-            size = "",
-        } = req.body;
+    static async update(req, res) {
+        const { params: { petId }, user: { id }, body } = req;
 
         try {
-
             const pet = await Pet.update({
-                name: name,
-                type: type,
-                breed: breed,
-                gender: gender,
-                story: story,
-                passportId: passportId,
-                color: color,
-                size: size,
-                birthday: birthday ? new Date(birthday) : "",
+                ...body,
+                birthday: new Date(body.birthday),
             }, {
                 where: {
                     id: petId,
@@ -129,11 +106,11 @@ class PetsRouter {
 
             res.send({
                 petId: petId,
-                pet: pet,
+                pet: pet[1][0],
             });
 
         } catch(error) {
-            console.log("error", error);
+            // console.log("error", error);
 
             res.status(400).send({
                 success: false,

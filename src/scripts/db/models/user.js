@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
                 notEmpty: {
                     msg: "Last name can not be empty."
                 },
-            }
+            },
         },
         email: {
             type: DataTypes.STRING,
@@ -30,11 +30,11 @@ export default (sequelize, DataTypes) => {
                 },
             }
         },
-        username: {
-            type: DataTypes.STRING,
-            validate: {
-                notEmpty: true,
-            }
+        birthday: {
+            type: DataTypes.DATE,
+        },
+        biography: {
+            type: DataTypes.TEXT,
         },
         password: {
             type: DataTypes.STRING,

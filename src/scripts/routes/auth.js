@@ -28,23 +28,21 @@ class AuthRouter {
 
     static async signIn (req, res) {
 
-        const {email, password} = req.body;
+        const { email, password } = req.body;
 
         try {
             const user = await User.findOne({
                 where: {
                     [Sequelize.Op.or]: [{
-                        email: email
-                    }, {
-                        username: email
-                    }]
+                        email: email,
+                    }],
                 },
                 include: [{
                     model: Pet,
                     include: [{
-                        model: PetType
+                        model: PetType,
                     }],
-                    attributes: ["id", "name"]
+                    attributes: ["id", "name"],
                 }],
             });
 
@@ -57,8 +55,9 @@ class AuthRouter {
                             firstName: user.firstName,
                             lastName: user.lastName,
                             email: user.email,
-                            username: user.username,
                             gender: user.gender,
+                            birthday: user.birthday,
+                            biography: user.biography,
                             Pets: user.Pets,
                         },
                     })
@@ -67,8 +66,8 @@ class AuthRouter {
                 res.status(400).send({
                     success: false,
                     errors: {
-                        password: "Please check your password."
-                    }
+                        password: "Please check your password.",
+                    },
                 });
             }
 
@@ -76,26 +75,16 @@ class AuthRouter {
             res.status(400).send({
                 success: false,
                 errors: {
-                    email: "User not found. Check your credentials."
-                }
+                    email: "User not found. Check your credentials.",
+                },
             });
         }
     }
 
     static async signUp (req, res) {
+        const { body } = req;
         try {
-            const splittedEmail = req.body.email.split("@");
-
-            const userData = {
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-                username: splittedEmail[0],
-                password: req.body.password,
-                gender: req.body.gender,
-            };
-
-            const user = await User.create(userData);
+            const user = await User.create(body);
 
             res.send({
                 success: true,
@@ -105,9 +94,10 @@ class AuthRouter {
                         firstName: user.firstName,
                         lastName: user.lastName,
                         email: user.email,
-                        username: user.username,
                         gender: user.gender,
-                        Pets: []
+                        birthday: user.birthday,
+                        biography: user.biography,
+                        Pets: [],
                     },
                 })
             });

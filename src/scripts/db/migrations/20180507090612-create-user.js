@@ -17,9 +17,12 @@ export default {
                 type: Sequelize.STRING,
                 unique: true,
             },
-            username: {
+            biography: {
                 type: Sequelize.STRING,
                 unique: true,
+            },
+            birthday: {
+                type: Sequelize.DATE,
             },
             password: {
                 type: Sequelize.STRING

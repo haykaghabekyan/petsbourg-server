@@ -1,7 +1,8 @@
 import { Router } from "express";
 import models from "../db/models/index";
+import requireAuth from "../utils/require-auth";
 
-const { User, Pet, PetType, PetBreed } = models;
+const { User, Pet, PetType } = models;
 
 class UsersRouter {
 
@@ -10,6 +11,38 @@ class UsersRouter {
     constructor() {
         this.router = Router();
         this.router.get('/:userId', UsersRouter.get);
+        this.router.put('/:userId', requireAuth, UsersRouter.update);
+    }
+
+    static async update(req, res) {
+        const { params: { userId }, user, body } = req;
+
+        try {
+            const updatedUser = await User.update({
+                ...body,
+                birthday: new Date(body.birthday),
+            }, {
+                where: {
+                    id: userId,
+                },
+                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
+                returning: true,
+                limit: 1,
+            });
+
+            res.status(200).send({
+                success: true,
+                user: updatedUser[1][0],
+            });
+
+        } catch (error) {
+            // console.error(error);
+
+            res.status(400).send({
+                success: false,
+                msg: "Something went wrong.",
+            });
+        }
     }
 
     static async get(req, res) {
@@ -21,7 +54,7 @@ class UsersRouter {
                 where: {
                     id: userId,
                 },
-                attributes: ["id", "firstName", "lastName", "email", "username", "gender"],
+                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
                 include: [{
                     model: Pet,
                     attributes: ["id", "name", "gender", "story"],
@@ -37,12 +70,12 @@ class UsersRouter {
                 user: user,
             });
         } catch (error) {
-            console.error(error);
+            // console.error(error);
 
             res.status(400).send({
                 success: false,
-                msg: "Something went wrong while getting user with pets."
-            })
+                msg: "Something went wrong while getting user with pets.",
+            });
         }
 
     }
