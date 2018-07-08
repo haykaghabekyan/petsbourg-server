@@ -58,6 +58,7 @@ class AuthRouter {
                             gender: user.gender,
                             birthday: user.birthday,
                             biography: user.biography,
+                            profilePicture: user.profilePicture,
                             Pets: user.Pets,
                         },
                     })
@@ -97,6 +98,7 @@ class AuthRouter {
                         gender: user.gender,
                         birthday: user.birthday,
                         biography: user.biography,
+                        profilePicture: user.profilePicture,
                         Pets: [],
                     },
                 })

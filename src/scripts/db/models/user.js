@@ -36,6 +36,9 @@ export default (sequelize, DataTypes) => {
         biography: {
             type: DataTypes.TEXT,
         },
+        profilePicture: {
+            type: DataTypes.STRING,
+        },
         password: {
             type: DataTypes.STRING,
             set(val) {

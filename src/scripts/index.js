@@ -4,10 +4,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
-import ApiRouter from "./routes/router";
+import { Router } from "express";
+import AuthRouter from "./routes/auth";
+import PetsRouter from "./routes/pets";
+import PetTypesRouter from "./routes/pet-types";
+import UsersRouter from "./routes/users";
+// import UploadsAWSRouter from "./routes/uploads-aws";
+import UploadsCloudinaryRouter from "./routes/uploads-cloudinary";
 
 class Server {
-    port = null;
     app = null;
 
     constructor () {
@@ -36,14 +41,19 @@ class Server {
     }
 
     routes () {
-        const apiRouter = new ApiRouter();
-
         const corsOptions = {
             // origin: 'http://localhost:8081',
             // optionsSuccessStatus: 200,
         };
 
-        this.app.use('/api', cors(corsOptions), apiRouter.router);
+        const router = Router();
+        router.use('/auth', AuthRouter);
+        router.use('/pets', PetsRouter);
+        router.use('/pet-types', PetTypesRouter);
+        router.use('/users', UsersRouter);
+        router.use('/uploads', UploadsCloudinaryRouter); //UploadsAWSRouter
+
+        this.app.use('/api', cors(corsOptions), router);
     }
 
     static onError(error) {

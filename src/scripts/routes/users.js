@@ -25,7 +25,7 @@ class UsersRouter {
                 where: {
                     id: userId,
                 },
-                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
+                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography", "profilePicture"],
                 returning: true,
                 limit: 1,
             });
@@ -54,7 +54,7 @@ class UsersRouter {
                 where: {
                     id: userId,
                 },
-                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
+                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography", "profilePicture"],
                 include: [{
                     model: Pet,
                     attributes: ["id", "name", "gender", "story"],

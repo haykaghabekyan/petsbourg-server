@@ -1,4 +1,4 @@
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import JWT_PUBLIC_KEY from "../configs/jwt";
 
 const requireToken = (req, res, next) => {

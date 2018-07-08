@@ -21,6 +21,9 @@ export default {
                 type: Sequelize.STRING,
                 unique: true,
             },
+            profilePicture: {
+                type: Sequelize.STRING,
+            },
             birthday: {
                 type: Sequelize.DATE,
             },

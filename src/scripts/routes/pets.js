@@ -4,12 +4,15 @@ import models from "../db/models/index";
 const { Pet, PetType, PetBreed, User } = models;
 
 class PetsRouter {
-
     router = null;
 
     constructor() {
         this.router = Router();
-        this.routes();
+
+        this.router.get('/pet-types', PetsRouter.getPetTypes);
+        this.router.get('/:petId', PetsRouter.get);
+        this.router.put('/:petId', requireAuth, PetsRouter.update);
+        this.router.post('/', requireAuth, PetsRouter.create);
     }
 
     static async get(req, res) {
@@ -35,7 +38,7 @@ class PetsRouter {
                 where: {
                     id: pet.userId,
                 },
-                attributes: ["id", "firstName", "lastName", "email", "gender"],
+                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
                 include: [{
                     model: Pet,
                     attributes: ["id", "petTypeId", "name", "gender"],
@@ -158,13 +161,6 @@ class PetsRouter {
                 msg: "Something went wrong, please try later.",
             });
         }
-    }
-
-    routes () {
-        this.router.get('/pet-types', PetsRouter.getPetTypes);
-        this.router.get('/:petId', PetsRouter.get);
-        this.router.put('/:petId', requireAuth, PetsRouter.update);
-        this.router.post('/', requireAuth, PetsRouter.create);
     }
 }
 
