@@ -1,17 +1,16 @@
 import jwt from "jsonwebtoken";
-import JWT_PUBLIC_KEY from "../configs/jwt";
+import { JWT_PUBLIC_KEY } from "../configs/jwt";
 
-const requireToken = (req, res, next) => {
+export const requireAuth = (req, res, next) => {
     if (req.headers.authorization) {
         const bearer = req.headers.authorization.split(" ");
         const jwtToken = bearer[1];
 
-        let decoded;
+        let decoded = null;
         try {
             decoded = jwt.verify(jwtToken, JWT_PUBLIC_KEY);
         } catch (error) {
-            // console.error(error);
-            decoded = null;
+            console.error("invalid jwt", error);
         }
 
         if (!decoded) {
@@ -21,7 +20,7 @@ const requireToken = (req, res, next) => {
             });
         }
 
-        req.user = decoded.profile;
+        req.user = decoded.user;
 
         next();
     } else {
@@ -31,5 +30,3 @@ const requireToken = (req, res, next) => {
         });
     }
 };
-
-export default requireToken;

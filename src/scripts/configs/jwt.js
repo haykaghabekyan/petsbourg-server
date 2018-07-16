@@ -1,1 +1,1 @@
-export default "petsbourgjwttoken";
+export const JWT_PUBLIC_KEY = "petsbourgjwttoken";

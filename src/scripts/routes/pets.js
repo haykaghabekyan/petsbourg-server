@@ -1,7 +1,7 @@
 import { Router } from "express";
-import requireAuth from "../utils/require-auth";
-import models from "../db/models/index";
-const { Pet, PetType, PetBreed, User } = models;
+import { requireAuth } from "../utils/require-auth";
+import { User } from "../models/user";
+import { Pet } from "../models/pet";
 
 class PetsRouter {
     router = null;
@@ -9,7 +9,6 @@ class PetsRouter {
     constructor() {
         this.router = Router();
 
-        this.router.get('/pet-types', PetsRouter.getPetTypes);
         this.router.get('/:petId', PetsRouter.get);
         this.router.put('/:petId', requireAuth, PetsRouter.update);
         this.router.post('/', requireAuth, PetsRouter.create);
@@ -19,73 +18,40 @@ class PetsRouter {
         const { params: { petId } } = req;
 
         try {
-            const pet = await Pet.findOne({
-                where: {
-                    id: petId,
-                },
-                model: Pet,
-                attributes: ["id", "userId", "name", "gender", "story", "color", "size", "birthday", "passportId"],
-                include: [{
-                    model: PetType,
-                    attributes: ["id", "name"],
-                }, {
-                    model: PetBreed,
-                    attributes: ["id", "name"],
-                }],
-            });
+            const pet = await Pet.findById(petId)
+                .populate({
+                    path: "owner",
+                    select: "_id firstName lastName email profilePicture biography",
+                    populate: {
+                        path: "pets",
+                        select: "_id name",
+                        populate: [{
+                            path: "type",
+                            select: "_id name",
+                        }, {
+                            path: "breed",
+                            select: "_id name",
+                        }],
+                    },
+                })
+                .populate("type", "_id name")
+                .populate("breed", "_id name");
 
-            const user = await User.findOne({
-                where: {
-                    id: pet.userId,
-                },
-                attributes: ["id", "firstName", "lastName", "email", "gender", "birthday", "biography"],
-                include: [{
-                    model: Pet,
-                    attributes: ["id", "petTypeId", "name", "gender"],
-                    include: [{
-                        model: PetType,
-                        attributes: ["id", "name"],
-                    }],
-                }],
-            });
-
-            res.status(200).send({
-                success: true,
-                pet: pet,
-                user: user,
-            });
+            setTimeout(function () {
+                res.status(200).send({
+                    success: true,
+                    pet: {
+                        profile: pet,
+                    },
+                });
+            }, 5000);
 
         } catch (error) {
-            // console.log(error);
+            console.error(error);
 
             res.status(400).send({
                 success: false,
-                msg: "Something went wrong while getting pet."
-            });
-        }
-    }
-
-    static async getPetTypes(req, res) {
-        try {
-            const petTypes = await PetType.findAll({
-                attributes: ["id", "name"],
-                include: [{
-                    model: PetBreed,
-                    attributes: ["id", "name"]
-                }],
-            });
-
-            res.status(200).send({
-                success: true,
-                petTypes: petTypes
-            });
-
-        } catch (error) {
-            // console.error(error);
-
-            res.status(400).send({
-                success: false,
-                msg: "Something went wrong while getting pet types."
+                message: "Something went wrong while getting pet."
             });
         }
     }
@@ -94,26 +60,36 @@ class PetsRouter {
         const { params: { petId }, user: { id }, body } = req;
 
         try {
-            const pet = await Pet.update({
+            const pet = await Pet.findByIdAndUpdate(petId, {
                 ...body,
                 birthday: new Date(body.birthday),
-            }, {
-                where: {
-                    id: petId,
-                    userId: id,
+            }).populate({
+                path: "owner",
+                select: "_id firstName lastName email profilePicture biography",
+                populate: {
+                    path: "pets",
+                    select: "_id name",
+                    populate: [{
+                        path: "type",
+                        select: "_id name",
+                    }, {
+                        path: "breed",
+                        select: "_id name",
+                    }],
                 },
-                attributes: ["id", "name"],
-                returning: true,
-                limit: 1,
-            });
+            })
+            .populate("type", "_id name")
+            .populate("breed", "_id name");
 
-            res.send({
-                petId: petId,
-                pet: pet[1][0],
+            res.status(200).json({
+                success: true,
+                pet: {
+                    profile: pet,
+                },
             });
 
         } catch(error) {
-            // console.log("error", error);
+            console.log("Error while updating pet", error);
 
             res.status(400).send({
                 success: false,
@@ -126,35 +102,43 @@ class PetsRouter {
         const { user, body } = req;
 
         try {
-            const createdPet = await Pet.create({
-                userId: user.id,
-                name: body.name,
-                petTypeId: body.type,
-                petBreedId: body.breed,
-                gender: body.gender,
-            });
+            const owner = await User.findById(user._id);
 
-            const pet = await Pet.findOne({
-                where: {
-                    id: createdPet.id,
-                },
-                model: Pet,
-                attributes: ["id", "userId", "name", "gender"],
-                include: [{
-                    model: PetType,
-                    attributes: ["id", "name"],
-                }, {
-                    model: PetBreed,
-                    attributes: ["id", "name"],
-                }],
-            });
+            if (!owner) {
+                res.status(500).send({
+                    success: false,
+                    msg: "Something went wrong, please try later.",
+                });
+            }
 
-            res.status(200).send({
-                success: true,
-                pet: pet,
-            });
+            try {
+                const pet = await Pet.create({
+                    owner: user._id,
+                    ...body,
+                });
+
+                try {
+                    owner.pets.push(pet);
+                    await owner.save();
+
+                    res.status(200).send({
+                        success: true,
+                        pet: pet,
+                    });
+                } catch(error) {
+                    console.error("error while saving user pets", error);
+                }
+            } catch (error) {
+                console.error("error while creating pet", error);
+
+                res.status(500).send({
+                    success: false,
+                    msg: "Something went wrong, please try later.",
+                });
+            }
+
         } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
 
             res.status(400).send({
                 success: false,

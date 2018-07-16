@@ -1,45 +1,67 @@
 import { Router } from "express";
-import models from "../db/models/index";
-const { PetType, PetBreed } = models;
+import mongoose from "mongoose";
 
-class PetsRouter {
+import { PetType } from "../models/pet-type";
 
+import { bird } from "../data/pet-breeds/bird";
+import { cat } from "../data/pet-breeds/cat";
+import { dog } from "../data/pet-breeds/dog";
+import { fish } from "../data/pet-breeds/fish";
+import { hamster } from "../data/pet-breeds/hamster";
+import { rabbit } from "../data/pet-breeds/rabbit";
+
+const petTypes = [bird, cat, dog, fish, hamster, rabbit];
+
+class PetTypesRouter {
     router = null;
 
     constructor() {
         this.router = Router();
-        this.router.get('/', PetsRouter.get);
+        this.router.get("/", PetTypesRouter.get);
+        this.router.post("/", PetTypesRouter.create);
     }
 
     static async get(req, res) {
         try {
-            const petTypes = await PetType.findAll({
-                attributes: ["id", "name"],
-                include: [{
-                    model: PetBreed,
-                    attributes: ["id", "name"]
-                }],
-            });
+            const petTypes = await PetType.find({})
+                .populate({
+                    path: "breeds",
+                    select: "_id name",
+                });
 
-            res.send({
+            res.status(200).json({
                 success: true,
-                petTypes: petTypes
+                petTypes: petTypes,
             });
+        } catch(error) {
+            console.error(error);
 
-        } catch (error) {
-            // console.error(error);
-
-            res.status(400).send({
+            res.status(500).json({
                 success: false,
-                msg: "Something went wrong while getting pet types."
+                message: "error",
             });
         }
     }
 
     static async create(req, res) {
-
+        const types = [];
+        petTypes.forEach(petType => {
+            types.push({
+                _id: new mongoose.Types.ObjectId(),
+                name: petType.petType,
+            });
+        });
+        try {
+            const pTs = await PetType.create(types);
+            res.status(200).send(pTs);
+        } catch(error) {
+            console.error(error);
+            res.status(500).json({
+                success: false,
+            });
+        }
     }
 
 }
 
-export default (new PetsRouter()).router;
+export default (new PetTypesRouter()).router;

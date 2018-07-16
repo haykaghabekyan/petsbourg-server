@@ -1,23 +1,18 @@
 import { Router } from "express";
-import * as jwt from "jsonwebtoken";
-import Sequelize from "sequelize";
-
-import models from "../db/models/index";
-
-const { User, Pet, PetType } = models;
-
-import JWT_PUBLIC_KEY from "../configs/jwt";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import { User } from "../models/user";
+import { JWT_PUBLIC_KEY } from "../configs/jwt";
 
 const signToken = data => {
     return jwt.sign({
         ...data
     }, JWT_PUBLIC_KEY, {
-        expiresIn: 60 * 60
+        expiresIn: 60 * 60,
     });
 };
 
 class AuthRouter {
-
     router = null;
 
     constructor() {
@@ -26,44 +21,25 @@ class AuthRouter {
         this.router.post('/sign-up', AuthRouter.signUp);
     }
 
-    static async signIn (req, res) {
-
+    static async signIn(req, res) {
         const { email, password } = req.body;
 
         try {
             const user = await User.findOne({
-                where: {
-                    [Sequelize.Op.or]: [{
-                        email: email,
-                    }],
-                },
-                include: [{
-                    model: Pet,
-                    include: [{
-                        model: PetType,
-                    }],
-                    attributes: ["id", "name"],
-                }],
+                email: email,
+            }).populate({
+                path: "pets",
+                select: "_id name",
+                populate: [{
+                    path: "type",
+                    select: "_id name",
+                }, {
+                    path: "breed",
+                    select: "_id name",
+                }]
             });
 
-            if (user.validPassword(password)) {
-                res.send({
-                    success: true,
-                    token: signToken({
-                        profile: {
-                            id: user.id,
-                            firstName: user.firstName,
-                            lastName: user.lastName,
-                            email: user.email,
-                            gender: user.gender,
-                            birthday: user.birthday,
-                            biography: user.biography,
-                            profilePicture: user.profilePicture,
-                            Pets: user.Pets,
-                        },
-                    })
-                });
-            } else {
+            if (user && !user.isValidPassword(password, user.passwordHash)) {
                 res.status(400).send({
                     success: false,
                     errors: {
@@ -72,7 +48,28 @@ class AuthRouter {
                 });
             }
 
+            res.send({
+                success: true,
+                user: {
+                    profile: {
+                        _id: user._id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
+                        gender: user.gender,
+                        pets: user.pets,
+                    },
+                },
+                token: signToken({
+                    user: {
+                        _id: user._id,
+                    },
+                })
+            });
+
         } catch (error) {
+            console.error(error);
+
             res.status(400).send({
                 success: false,
                 errors: {
@@ -82,39 +79,38 @@ class AuthRouter {
         }
     }
 
-    static async signUp (req, res) {
-        const { body } = req;
+    static async signUp(req, res) {
         try {
-            const user = await User.create(body);
+            const user = await User.create({
+                _id: new mongoose.Types.ObjectId(),
+                ...req.body,
+            });
 
             res.send({
                 success: true,
-                token: signToken({
+                user: {
                     profile: {
-                        id: user.id,
+                        _id: user._id,
                         firstName: user.firstName,
                         lastName: user.lastName,
                         email: user.email,
                         gender: user.gender,
-                        birthday: user.birthday,
-                        biography: user.biography,
-                        profilePicture: user.profilePicture,
-                        Pets: [],
+                        pets: [],
                     },
-                })
+                },
+                token: signToken({
+                    user: {
+                        _id: user._id,
+                    },
+                }),
             });
 
         } catch (error) {
-            let errors = {};
-            if (error.errors) {
-                error.errors.forEach(error => {
-                    errors[error.path] = error.message;
-                });
-            }
+            console.error("error while creating user", error);
 
             res.status(404).send({
                 success: false,
-                errors: errors,
+                errors: {},
             });
         }
     }

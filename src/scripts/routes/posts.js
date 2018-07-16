@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 class PostsRouter {
-
     router = null;
 
     constructor() {
