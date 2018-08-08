@@ -61,7 +61,7 @@ class UsersRouter {
 
         try {
             const user = await User.findById(userId)
-                .select("_id firstName lastName email gender isVerified biography")
+                .select("_id firstName lastName email gender isVerified biography picture")
                 .populate({
                     path: "pets",
                     select: "_id name",

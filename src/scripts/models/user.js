@@ -23,8 +23,8 @@ const UserSchema = new mongoose.Schema({
     biography: {
         type: String,
     },
-    profilePicture: {
-        type: String,
+    picture: {
+        type: Object,
     },
     passwordHash: {
         type: String,

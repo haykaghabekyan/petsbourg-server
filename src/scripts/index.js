@@ -12,8 +12,8 @@ import PetsRouter from "./routes/pets";
 import PetTypesRouter from "./routes/pet-types";
 import PetBreedsRouter from "./routes/pet-breeds";
 import UsersRouter from "./routes/users";
-// import UploadsAWSRouter from "./routes/uploads-aws";
-import UploadsCloudinaryRouter from "./routes/uploads-cloudinary";
+import SearchRouter from "./routes/search";
+import UploadsRouter from "./routes/uploads";
 
 class Server {
     app = null;
@@ -57,8 +57,8 @@ class Server {
         router.use("/pet-types", PetTypesRouter);
         router.use("/pet-breeds", PetBreedsRouter);
         router.use("/users", UsersRouter);
-        router.use("/uploads", UploadsCloudinaryRouter); //UploadsAWSRouter
-
+        router.use("/uploads", UploadsRouter);
+        router.use("/search", SearchRouter);
         this.app.use("/api", cors(corsOptions), router);
     }
 
@@ -80,7 +80,7 @@ class Server {
     }
 }
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3003;
 
 const server = new Server();
 server.start(port);

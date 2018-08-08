@@ -57,7 +57,9 @@ class AuthRouter {
                         lastName: user.lastName,
                         email: user.email,
                         gender: user.gender,
+                        biography: user.biography,
                         pets: user.pets,
+                        picture: user.picture,
                     },
                 },
                 token: signToken({
@@ -95,6 +97,7 @@ class AuthRouter {
                         lastName: user.lastName,
                         email: user.email,
                         gender: user.gender,
+                        picture: user.picture,
                         pets: [],
                     },
                 },

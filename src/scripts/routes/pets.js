@@ -21,7 +21,7 @@ class PetsRouter {
             const pet = await Pet.findById(petId)
                 .populate({
                     path: "owner",
-                    select: "_id firstName lastName email profilePicture biography",
+                    select: "_id firstName lastName email picture biography",
                     populate: {
                         path: "pets",
                         select: "_id name",
@@ -37,17 +37,14 @@ class PetsRouter {
                 .populate("type", "_id name")
                 .populate("breed", "_id name");
 
-            setTimeout(function () {
-                res.status(200).send({
-                    success: true,
-                    pet: {
-                        profile: pet,
-                    },
-                });
-            }, 5000);
-
+            res.status(200).send({
+                success: true,
+                pet: {
+                    profile: pet,
+                },
+            });
         } catch (error) {
-            console.error(error);
+            console.error("Error while finding a pet", error);
 
             res.status(400).send({
                 success: false,
@@ -57,7 +54,7 @@ class PetsRouter {
     }
 
     static async update(req, res) {
-        const { params: { petId }, user: { id }, body } = req;
+        const { params: { petId }, user, body } = req;
 
         try {
             const pet = await Pet.findByIdAndUpdate(petId, {
@@ -65,7 +62,7 @@ class PetsRouter {
                 birthday: new Date(body.birthday),
             }).populate({
                 path: "owner",
-                select: "_id firstName lastName email profilePicture biography",
+                select: "_id firstName lastName email picture biography",
                 populate: {
                     path: "pets",
                     select: "_id name",

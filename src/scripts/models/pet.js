@@ -32,13 +32,16 @@ const PetSchema = new mongoose.Schema({
         type: String,
     },
     color: {
-        type: Number,
+        type: String,
     },
     size: {
-        type: Number,
+        type: String,
     },
     birthday: {
         type: Date,
+    },
+    picture: {
+        type: Object,
     },
 });
 
