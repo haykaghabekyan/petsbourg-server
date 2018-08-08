@@ -7,6 +7,7 @@
     "start": "node ./src/scripts/index.js",
     "start:dev": "nodemon ./dist/scripts/index.js",
     "build:dev": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=es2015,stage-0",
+    "build:prod": "./node_modules/.bin/babel ./src/scripts --out-dir ./dist/scripts --presets=es2015,stage-0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Hayk Aghabekyan",
