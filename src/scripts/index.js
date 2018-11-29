@@ -14,7 +14,7 @@ import PetBreedsRouter from "./routes/pet-breeds";
 import UsersRouter from "./routes/users";
 import SearchRouter from "./routes/search";
 import UploadsRouter from "./routes/uploads";
-import { MONGO_CONFIGS } from "./configs/mongo";
+import { MONGO_URI } from "./configs/mongo";
 
 class Server {
     app = null;
@@ -29,7 +29,7 @@ class Server {
         const mongooseConfigs = {
             useNewUrlParser: true,
         };
-        const connection = mongoose.connect(MONGO_CONFIGS.uri, mongooseConfigs );
+        const connection = mongoose.connect(MONGO_URI, mongooseConfigs );
         connection
             .then(result => {
                 console.log("mongo connection success");
