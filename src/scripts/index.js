@@ -14,6 +14,7 @@ import PetBreedsRouter from "./routes/pet-breeds";
 import UsersRouter from "./routes/users";
 import SearchRouter from "./routes/search";
 import UploadsRouter from "./routes/uploads";
+import { MONGO_CONFIGS } from "./configs/mongo";
 
 class Server {
     app = null;
@@ -25,7 +26,17 @@ class Server {
     }
 
     config() {
-        mongoose.connect(`mongodb://127.0.0.1:27017/petsbourg`, { useNewUrlParser: true });
+        const mongooseConfigs = {
+            useNewUrlParser: true,
+        };
+        const connection = mongoose.connect(MONGO_CONFIGS.uri, mongooseConfigs );
+        connection
+            .then(result => {
+                console.log("mongo connection success");
+            })
+            .catch(error => {
+            console.error("mongo connection error");
+        });
 
         // Log requests to console
         this.app.use(morgan("dev"));

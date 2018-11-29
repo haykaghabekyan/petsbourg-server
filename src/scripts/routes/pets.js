@@ -57,9 +57,14 @@ class PetsRouter {
         const { params: { petId }, user, body } = req;
 
         try {
+            console.log(body);
             const pet = await Pet.findByIdAndUpdate(petId, {
-                ...body,
-                birthday: new Date(body.birthday),
+                $set: {
+                    ...body,
+                    birthday: new Date(body.birthday),
+                },
+            }, {
+                new: true,
             }).populate({
                 path: "owner",
                 select: "_id firstName lastName email picture biography",

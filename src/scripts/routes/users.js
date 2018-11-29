@@ -26,7 +26,7 @@ class UsersRouter {
                 $set: body,
             }, {
                 new: true,
-            }).select("_id firstName lastName email gender isVerified biography")
+            }).select("_id firstName lastName email gender isVerified picture biography")
                 .populate({
                     path: "pets",
                     select: "_id name",
