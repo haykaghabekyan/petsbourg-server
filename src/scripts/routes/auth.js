@@ -41,6 +41,7 @@ class AuthRouter {
                     email: user.email,
                     gender: user.gender,
                     biography: user.biography,
+                    picture: user.picture,
                 },
                 token: signToken({
                     user: {
