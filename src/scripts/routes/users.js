@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { requireAuth } from "../utils/require-auth";
-import { User } from "../models/user";
+import { Router } from 'express';
+import { requireAuth } from '../utils/require-auth';
+import { User } from '../models/user';
 
 class UsersRouter {
     router = null;
@@ -17,7 +17,7 @@ class UsersRouter {
         if (user._id !== userId) {
             return res.status(400).send({
                 success: false,
-                msg: "Something went wrong.",
+                msg: 'Something went wrong.',
             });
         }
 
@@ -26,16 +26,16 @@ class UsersRouter {
                 $set: body,
             }, {
                 new: true,
-            }).select("_id firstName lastName email gender isVerified picture biography")
+            }).select('_id firstName lastName email gender isVerified picture biography')
                 .populate({
-                    path: "pets",
-                    select: "_id name",
+                    path: 'pets',
+                    select: '_id name',
                     populate: [{
-                        path: "type",
-                        select: "_id name",
+                        path: 'type',
+                        select: '_id name',
                     }, {
-                        path: "breed",
-                        select: "_id name",
+                        path: 'breed',
+                        select: '_id name',
                     }],
                 });
 
@@ -47,38 +47,29 @@ class UsersRouter {
             });
 
         } catch (error) {
-            console.error("error while updating user", error);
+            console.error('error while updating user', error);
 
             res.status(500).send({
                 success: false,
-                msg: "Something went wrong.",
+                errors: {
+                    message: 'Something went wrong.',
+                },
             });
         }
     }
 
     static async get(req, res) {
-        const { params: { userId } } = req;
+        const { userId = '' } = req.params;
 
         try {
             const user = await User.findById(userId)
-                .select("_id firstName lastName email gender isVerified biography picture")
-                .populate({
-                    path: "pets",
-                    select: "_id name",
-                    populate: [{
-                        path: "type",
-                        select: "_id name",
-                    }, {
-                        path: "breed",
-                        select: "_id name",
-                    }],
-                });
+                .select('_id firstName lastName email gender isVerified biography picture');
 
             if (!user) {
                 res.status(404).send({
-                    success: true,
-                    user: {
-                        profile: null,
+                    success: false,
+                    errors: {
+                        message: 'User not found.'
                     },
                 });
             }
@@ -86,15 +77,21 @@ class UsersRouter {
             res.status(200).send({
                 success: true,
                 user: {
-                    profile: user,
+                    id: user.id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    gender: user.gender,
+                    biography: user.biography,
+                    picture: user.picture,
                 },
             });
         } catch (error) {
-            console.error("error while getting user", error);
-
             res.status(500).send({
                 success: false,
-                msg: "Something went wrong while getting user with pets.",
+                errors: {
+                    message: 'Something went wrong.',
+                },
             });
         }
     }
