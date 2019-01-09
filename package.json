@@ -5,9 +5,9 @@
   "repository": "https://haykaghabekyan@bitbucket.org/petsbourg/server.git",
   "main": "./src/scripts/index.js",
   "scripts": {
-    "start": "node ./dist/scripts/index.js",
-    "start:dev": "nodemon ./dist/scripts/index.js",
-    "build:dev": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
+    "start": "nodemon ./dist/scripts/index.js",
+    "build": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
+    "start:prod": "node ./dist/scripts/index.js",
     "build:prod": "NODE_ENV=production ./node_modules/.bin/babel ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
     "heroku-postbuild": "npm run build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
