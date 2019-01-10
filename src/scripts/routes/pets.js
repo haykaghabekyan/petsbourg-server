@@ -44,8 +44,6 @@ class PetsRouter {
                 },
             });
         } catch (error) {
-            console.error("Error while finding a pet", error);
-
             res.status(400).send({
                 success: false,
                 message: "Something went wrong while getting pet."
@@ -57,7 +55,6 @@ class PetsRouter {
         const { params: { petId }, user, body } = req;
 
         try {
-            console.log(body);
             const pet = await Pet.findByIdAndUpdate(petId, {
                 $set: {
                     ...body,

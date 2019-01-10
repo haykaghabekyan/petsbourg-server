@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import { requireAuth } from '../utils/require-auth';
 import { User } from '../models/user';
+import { Pet } from '../models/pet';
 
 class UsersRouter {
     router = null;
 
     constructor() {
         this.router = Router();
+        this.router.get('/:userId/pets/:petId', UsersRouter.getUserPet);
+        this.router.get('/:userId/pets', UsersRouter.getUserPets);
         this.router.get('/:userId', UsersRouter.get);
         this.router.put('/:userId', requireAuth, UsersRouter.update);
     }
@@ -47,8 +50,6 @@ class UsersRouter {
             });
 
         } catch (error) {
-            console.error('error while updating user', error);
-
             res.status(500).send({
                 success: false,
                 errors: {
@@ -74,7 +75,7 @@ class UsersRouter {
                 });
             }
 
-            res.status(200).send({
+            res.send({
                 success: true,
                 user: {
                     id: user.id,
@@ -94,6 +95,31 @@ class UsersRouter {
                 },
             });
         }
+    }
+
+    static async getUserPets(req, res) {
+        const { userId = '' } = req.params;
+
+        try {
+            const pets = await Pet.find({ owner: userId })
+                .select('_id name gender story passportId color size')
+                .populate("type", "_id name")
+                .populate("breed", "_id name");
+
+            res.send({
+                success: true,
+                pets: pets,
+            });
+        } catch (error) {
+            res.status(400).send({
+                success: false,
+                message: "Something went wrong."
+            });
+        }
+    }
+
+    static async getUserPet(req, res) {
+        const { userId = '', petId = '' } = req.params;
     }
 }
 
