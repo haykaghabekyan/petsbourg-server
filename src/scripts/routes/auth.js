@@ -88,7 +88,7 @@ class AuthRouter {
             res.status(404).send({
                 success: false,
                 errors: {
-                    message: 'User not found. Check your credentials.',
+                    message: 'User with this email address already exists.',
                 },
             });
         }
