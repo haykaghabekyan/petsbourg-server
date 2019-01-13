@@ -35,7 +35,7 @@ class AuthRouter {
             res.send({
                 success: true,
                 user: {
-                    id: user._id,
+                    _id: user._id,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
@@ -70,7 +70,7 @@ class AuthRouter {
             res.send({
                 success: true,
                 user: {
-                    id: user._id,
+                    _id: user._id,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
