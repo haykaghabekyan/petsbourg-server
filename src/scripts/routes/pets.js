@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { requireAuth } from "../utils/require-auth";
-import { User } from "../models/user";
-import { Pet } from "../models/pet";
+import { Router } from 'express';
+import { requireAuth } from '../utils/require-auth';
+import { User } from '../models/user';
+import { Pet } from '../models/pet';
 
 class PetsRouter {
     router = null;
@@ -10,8 +10,30 @@ class PetsRouter {
         this.router = Router();
 
         this.router.get('/:petId', PetsRouter.get);
+        this.router.get('/:petId/user', PetsRouter.getOwner);
         this.router.put('/:petId', requireAuth, PetsRouter.update);
         this.router.post('/', requireAuth, PetsRouter.create);
+    }
+
+    static async getOwner(req, res) {
+        const { params: { petId } } = req;
+
+        try {
+            const pet = await Pet.findById(petId).populate({
+                path: 'owner',
+                select: '_id firstName lastName email gender isVerified picture biography',
+            });
+
+            res.status(200).send({
+                success: true,
+                user: pet.owner,
+            });
+        } catch (error) {
+            res.status(400).send({
+                success: false,
+                message: 'Something went wrong while getting pet.'
+            });
+        }
     }
 
     static async get(req, res) {
@@ -19,34 +41,17 @@ class PetsRouter {
 
         try {
             const pet = await Pet.findById(petId)
-                .populate({
-                    path: "owner",
-                    select: "_id firstName lastName email picture biography",
-                    populate: {
-                        path: "pets",
-                        select: "_id name",
-                        populate: [{
-                            path: "type",
-                            select: "_id name",
-                        }, {
-                            path: "breed",
-                            select: "_id name",
-                        }],
-                    },
-                })
-                .populate("type", "_id name")
-                .populate("breed", "_id name");
+                .populate('type', '_id name')
+                .populate('breed', '_id name');
 
             res.status(200).send({
                 success: true,
-                pet: {
-                    profile: pet,
-                },
+                pet: pet,
             });
         } catch (error) {
             res.status(400).send({
                 success: false,
-                message: "Something went wrong while getting pet."
+                message: 'Something went wrong while getting pet.'
             });
         }
     }
@@ -63,22 +68,22 @@ class PetsRouter {
             }, {
                 new: true,
             }).populate({
-                path: "owner",
-                select: "_id firstName lastName email picture biography",
+                path: 'owner',
+                select: '_id firstName lastName email picture biography',
                 populate: {
-                    path: "pets",
-                    select: "_id name",
+                    path: 'pets',
+                    select: '_id name',
                     populate: [{
-                        path: "type",
-                        select: "_id name",
+                        path: 'type',
+                        select: '_id name',
                     }, {
-                        path: "breed",
-                        select: "_id name",
+                        path: 'breed',
+                        select: '_id name',
                     }],
                 },
             })
-            .populate("type", "_id name")
-            .populate("breed", "_id name");
+            .populate('type', '_id name')
+            .populate('breed', '_id name');
 
             res.status(200).json({
                 success: true,
@@ -88,11 +93,9 @@ class PetsRouter {
             });
 
         } catch(error) {
-            console.log("Error while updating pet", error);
-
             res.status(400).send({
                 success: false,
-                msg: "Something went wrong, please try later.",
+                msg: 'Something went wrong, please try later.',
             });
         }
     }
@@ -106,7 +109,7 @@ class PetsRouter {
             if (!owner) {
                 res.status(500).send({
                     success: false,
-                    msg: "Something went wrong, please try later.",
+                    msg: 'Something went wrong, please try later.',
                 });
             }
 
@@ -125,23 +128,21 @@ class PetsRouter {
                         pet: pet,
                     });
                 } catch(error) {
-                    console.error("error while saving user pets", error);
+                    console.error('error while saving user pets', error);
                 }
             } catch (error) {
-                console.error("error while creating pet", error);
+                console.error('error while creating pet', error);
 
                 res.status(500).send({
                     success: false,
-                    msg: "Something went wrong, please try later.",
+                    msg: 'Something went wrong, please try later.',
                 });
             }
 
         } catch (error) {
-            console.log("error", error);
-
             res.status(400).send({
                 success: false,
-                msg: "Something went wrong, please try later.",
+                msg: 'Something went wrong, please try later.',
             });
         }
     }

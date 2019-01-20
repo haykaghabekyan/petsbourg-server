@@ -32,21 +32,21 @@ class AuthRouter {
                 });
             }
 
+            const u = {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                gender: user.gender,
+                biography: user.biography,
+                picture: user.picture,
+            };
+
             res.send({
                 success: true,
-                user: {
-                    _id: user._id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    gender: user.gender,
-                    biography: user.biography,
-                    picture: user.picture,
-                },
+                user: u,
                 token: signToken({
-                    user: {
-                        id: user._id,
-                    },
+                    user: u,
                 })
             });
 
@@ -67,20 +67,21 @@ class AuthRouter {
                 ...req.body,
             });
 
+            const u = {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                gender: user.gender,
+                biography: user.biography,
+                picture: user.picture,
+            };
+
             res.send({
                 success: true,
-                user: {
-                    _id: user._id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    gender: user.gender,
-                    biography: null,
-                },
+                user: u,
                 token: signToken({
-                    user: {
-                        id: user._id,
-                    },
+                    user: u,
                 }),
             });
 
