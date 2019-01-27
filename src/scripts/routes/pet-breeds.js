@@ -1,15 +1,12 @@
-import { Router } from "express";
-import mongoose from "mongoose";
-
-import { PetType } from "../models/pet-type";
-import { PetBreed } from "../models/pet-breed";
-
-import { bird } from "../data/pet-breeds/bird";
-import { cat } from "../data/pet-breeds/cat";
-import { dog } from "../data/pet-breeds/dog";
-import { fish } from "../data/pet-breeds/fish";
-import { hamster } from "../data/pet-breeds/hamster";
-import { rabbit } from "../data/pet-breeds/rabbit";
+import { Router } from 'express';
+import { PetType } from '../models/pet-type';
+import { PetBreed } from '../models/pet-breed';
+import { bird } from '../data/pet-breeds/bird';
+import { cat } from '../data/pet-breeds/cat';
+import { dog } from '../data/pet-breeds/dog';
+import { fish } from '../data/pet-breeds/fish';
+import { hamster } from '../data/pet-breeds/hamster';
+import { rabbit } from '../data/pet-breeds/rabbit';
 
 const petTypes = {
     bird,
@@ -25,8 +22,8 @@ class PetBreedsRouter {
 
     constructor() {
         this.router = Router();
-        this.router.get("/", PetBreedsRouter.get);
-        this.router.post("/:petTypeParam", PetBreedsRouter.create);
+        this.router.get('/', PetBreedsRouter.get);
+        this.router.post('/:petTypeParam', PetBreedsRouter.create);
     }
 
     static async get(req, res) { }
@@ -62,14 +59,10 @@ class PetBreedsRouter {
                     success: true,
                 });
             } catch(error) {
-                console.error("2", error);
-
                 res.status(500).json({});
             }
 
         } catch(error) {
-            console.error("1", error);
-
             res.status(500).json({});
         }
 
