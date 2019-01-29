@@ -57,7 +57,7 @@ class PetsRouter {
     }
 
     static async update(req, res) {
-        const { params: { petId }, user, body } = req;
+        const { params: { petId }, body } = req;
 
         try {
             const pet = await Pet.findByIdAndUpdate(petId, {
@@ -87,15 +87,13 @@ class PetsRouter {
 
             res.status(200).json({
                 success: true,
-                pet: {
-                    profile: pet,
-                },
+                pet: pet,
             });
 
         } catch(error) {
             res.status(400).send({
                 success: false,
-                msg: 'Something went wrong, please try later.',
+                message: 'Something went wrong.',
             });
         }
     }
@@ -109,15 +107,16 @@ class PetsRouter {
             if (!owner) {
                 res.status(500).send({
                     success: false,
-                    msg: 'Something went wrong, please try later.',
+                    message: 'Something went wrong.',
                 });
             }
 
             try {
-                const pet = await Pet.create({
+                const p = await Pet.create({
                     owner: user._id,
                     ...body,
                 });
+                const pet = await p.populate('type', '_id name').populate('breed', '_id name').execPopulate();
 
                 try {
                     owner.pets.push(pet);
@@ -135,14 +134,14 @@ class PetsRouter {
 
                 res.status(500).send({
                     success: false,
-                    msg: 'Something went wrong, please try later.',
+                    message: 'Something went wrong.',
                 });
             }
 
         } catch (error) {
             res.status(400).send({
                 success: false,
-                msg: 'Something went wrong, please try later.',
+                message: 'Something went wrong',
             });
         }
     }
