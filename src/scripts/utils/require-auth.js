@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import { JWT_PUBLIC_KEY } from '../configs/jwt';
 
 export const requireAuth = (req, res, next) => {
-    console.log(req.headers);
     if (req.headers.authorization) {
         const bearer = req.headers.authorization.split(' ');
         const jwtToken = bearer[1];
