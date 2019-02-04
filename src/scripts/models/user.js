@@ -17,15 +17,17 @@ const UserSchema = new Schema({
         unique: true, // TODO unique validation
         required: [true, 'Please enter valid email address.'],
     },
+    // TODO
+    // use Date instead
     birthday: {
-        type: Date,
+        type: String,
     },
     biography: {
         type: String,
     },
-    picture: {
-        type: Object,
-    },
+    // picture: {
+    //     type: Object,
+    // },
     passwordHash: {
         type: String,
         required: [true, 'Password cannot be empty'],

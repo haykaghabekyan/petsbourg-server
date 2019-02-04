@@ -8,45 +8,35 @@ class UsersRouter {
 
     constructor() {
         this.router = Router();
-        this.router.get('/:userId/pets/:petId', UsersRouter.getUserPet);
         this.router.get('/:userId/pets', UsersRouter.getUserPets);
         this.router.get('/:userId', UsersRouter.get);
         this.router.put('/:userId', requireAuth, UsersRouter.update);
     }
 
     static async update(req, res) {
-        const { params: { userId }, user, body } = req;
+        const { params, body, user } = req;
 
-        if (user._id !== userId) {
-            return res.status(400).send({
-                success: false,
-                msg: 'Something went wrong.',
-            });
+        if (params.userId && params.userId !== user._id) {
+            return res
+                .status(404)
+                .send({
+                    success: false,
+                    errors: {
+                        message: 'Something went wrong.',
+                    }
+                });
         }
 
         try {
-            const updatedUser = await User.findByIdAndUpdate(userId, {
+            const updatedUser = await User.findByIdAndUpdate(user._id, {
                 $set: body,
             }, {
                 new: true,
-            }).select('_id firstName lastName email gender isVerified picture biography')
-                .populate({
-                    path: 'pets',
-                    select: '_id name',
-                    populate: [{
-                        path: 'type',
-                        select: '_id name',
-                    }, {
-                        path: 'breed',
-                        select: '_id name',
-                    }],
-                });
+            }).select('_id firstName lastName email gender isVerified birthday biography');
 
             res.status(200).send({
                 success: true,
-                user: {
-                    profile: updatedUser,
-                },
+                user: updatedUser,
             });
 
         } catch (error) {
@@ -64,7 +54,7 @@ class UsersRouter {
 
         try {
             const user = await User.findById(userId)
-                .select('_id firstName lastName email gender isVerified biography picture');
+                .select('_id firstName lastName email gender isVerified birthday biography');
 
             if (!user) {
                 res.status(404).send({
@@ -77,15 +67,7 @@ class UsersRouter {
 
             res.send({
                 success: true,
-                user: {
-                    _id: user._id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    gender: user.gender,
-                    biography: user.biography,
-                    picture: user.picture,
-                },
+                user: user,
             });
         } catch (error) {
             res.status(500).send({
@@ -103,8 +85,8 @@ class UsersRouter {
         try {
             const pets = await Pet.find({ owner: userId })
                 .select('_id name gender story passportId color size')
-                .populate("type", "_id name")
-                .populate("breed", "_id name");
+                .populate('type', '_id name')
+                .populate('breed', '_id name');
 
             res.send({
                 success: true,
@@ -113,13 +95,9 @@ class UsersRouter {
         } catch (error) {
             res.status(400).send({
                 success: false,
-                message: "Something went wrong."
+                message: 'Something went wrong.'
             });
         }
-    }
-
-    static async getUserPet(req, res) {
-        const { userId = '', petId = '' } = req.params;
     }
 }
 
