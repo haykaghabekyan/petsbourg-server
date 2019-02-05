@@ -17,10 +17,8 @@ const UserSchema = new Schema({
         unique: true, // TODO unique validation
         required: [true, 'Please enter valid email address.'],
     },
-    // TODO
-    // use Date instead
     birthday: {
-        type: String,
+        type: Date,
     },
     biography: {
         type: String,

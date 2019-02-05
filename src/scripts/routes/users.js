@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../utils/require-auth';
 import { User } from '../models/user';
 import { Pet } from '../models/pet';
+import moment from "moment";
 
 class UsersRouter {
     router = null;
@@ -29,7 +30,10 @@ class UsersRouter {
 
         try {
             const updatedUser = await User.findByIdAndUpdate(user._id, {
-                $set: body,
+                $set: {
+                    ...body,
+                    birthday: body.birthday ? moment(body.birthday, 'DD/MM/YYYY') : null,
+                },
             }, {
                 new: true,
             }).select('_id firstName lastName email gender isVerified birthday biography');

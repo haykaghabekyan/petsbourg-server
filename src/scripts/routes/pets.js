@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Router } from 'express';
 import { requireAuth } from '../utils/require-auth';
 import { User } from '../models/user';
@@ -10,30 +11,8 @@ class PetsRouter {
         this.router = Router();
 
         this.router.get('/:petId', PetsRouter.get);
-        this.router.get('/:petId/user', PetsRouter.getOwner);
         this.router.put('/:petId', requireAuth, PetsRouter.update);
         this.router.post('/', requireAuth, PetsRouter.create);
-    }
-
-    static async getOwner(req, res) {
-        const { params: { petId } } = req;
-
-        try {
-            const pet = await Pet.findById(petId).populate({
-                path: 'owner',
-                select: '_id firstName lastName email gender isVerified picture biography',
-            });
-
-            res.status(200).send({
-                success: true,
-                user: pet.owner,
-            });
-        } catch (error) {
-            res.status(400).send({
-                success: false,
-                message: 'Something went wrong while getting pet.'
-            });
-        }
     }
 
     static async get(req, res) {
@@ -46,12 +25,14 @@ class PetsRouter {
 
             res.status(200).send({
                 success: true,
-                pet: pet,
+                pet,
             });
         } catch (error) {
             res.status(400).send({
                 success: false,
-                message: 'Something went wrong while getting pet.'
+                errors: {
+                    message: 'Something went wrong.',
+                }
             });
         }
     }
@@ -63,37 +44,25 @@ class PetsRouter {
             const pet = await Pet.findByIdAndUpdate(petId, {
                 $set: {
                     ...body,
-                    birthday: new Date(body.birthday),
+                    birthday: body.birthday ? moment(body.birthday, 'DD/MM/YYYY') : null,
                 },
             }, {
                 new: true,
-            }).populate({
-                path: 'owner',
-                select: '_id firstName lastName email picture biography',
-                populate: {
-                    path: 'pets',
-                    select: '_id name',
-                    populate: [{
-                        path: 'type',
-                        select: '_id name',
-                    }, {
-                        path: 'breed',
-                        select: '_id name',
-                    }],
-                },
             })
             .populate('type', '_id name')
             .populate('breed', '_id name');
 
             res.status(200).json({
                 success: true,
-                pet: pet,
+                pet,
             });
 
         } catch(error) {
             res.status(400).send({
                 success: false,
-                message: 'Something went wrong.',
+                errors: {
+                    message: 'Something went wrong.',
+                }
             });
         }
     }

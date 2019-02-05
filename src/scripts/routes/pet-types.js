@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import mongoose from 'mongoose';
+import { Router } from 'express';
 import { PetType } from '../models/pet-type';
 import { PetBreed } from '../models/pet-breed';
 import { bird } from '../data/pet-breeds/bird';
@@ -27,14 +27,16 @@ class PetTypesRouter {
             const petTypes = await PetType.find()
                 .select('_id name');
 
-            res.status(200).json({
+            res.status(200).send({
                 success: true,
                 petTypes,
             });
         } catch(error) {
-            res.status(500).json({
+            res.status(500).send({
                 success: false,
-                message: 'Something went wrong',
+                errors: {
+                    message: 'Something went wrong',
+                },
             });
         }
     }
@@ -42,17 +44,19 @@ class PetTypesRouter {
     static async getBreeds(req, res) {
         const { petType } = req.params;
         try {
-            const petBreeds = await PetBreed.find({ petType })
+            const breeds = await PetBreed.find({ petType })
                 .select('_id name');
 
-            res.status(200).json({
+            res.status(200).send({
                 success: true,
-                petBreeds,
+                breeds,
             });
         } catch(error) {
-            res.status(500).json({
+            res.status(500).send({
                 success: false,
-                message: 'Something went wrong',
+                errors: {
+                    message: 'Something went wrong',
+                },
             });
         }
     }
