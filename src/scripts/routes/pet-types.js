@@ -44,12 +44,12 @@ class PetTypesRouter {
     static async getBreeds(req, res) {
         const { petType } = req.params;
         try {
-            const breeds = await PetBreed.find({ petType })
+            const petBreeds = await PetBreed.find({ petType })
                 .select('_id name');
 
             res.status(200).send({
                 success: true,
-                breeds,
+                petBreeds,
             });
         } catch(error) {
             res.status(500).send({
