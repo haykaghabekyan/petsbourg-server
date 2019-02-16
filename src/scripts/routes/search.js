@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router } from 'express';
 
 class SearchRouter {
     router = null;
@@ -6,17 +6,17 @@ class SearchRouter {
     constructor() {
         this.router = Router();
 
-        this.router.get("/:searchBy?", SearchRouter.get);
+        this.router.get('/', SearchRouter.get);
     }
 
     static get(req, res) {
 
-        const { searchBy = "pets" } = req.params;
+        const { query = '' } = req.query;
 
-        console.log(searchBy);
-
-        res.send("qaq");
-
+        res.send({
+            success: true,
+            pets: [],
+        });
     }
 
 }
