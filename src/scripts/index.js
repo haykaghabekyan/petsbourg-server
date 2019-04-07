@@ -29,7 +29,7 @@ class Server {
         const mongooseConfigs = {
             useNewUrlParser: true,
         };
-        const connection = mongoose.connect(MONGO_URI, mongooseConfigs );
+        const connection = mongoose.connect(MONGO_URI, mongooseConfigs);
         connection
             .then(result => {
                 console.log("mongo connection success");
