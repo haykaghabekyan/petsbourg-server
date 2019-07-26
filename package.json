@@ -1,8 +1,8 @@
 {
   "name": "petsbourg",
   "version": "1.0.0",
-  "description": "Petsbourg",
-  "repository": "https://haykaghabekyan@bitbucket.org/petsbourg/server.git",
+  "description": "Petsbourg server app",
+  "repository": "git@github.com:haykaghabekyan/petsbourg-server.git",
   "main": "",
   "scripts": {
     "start": "node ./dist/scripts/index.js",
