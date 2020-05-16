@@ -31,10 +31,10 @@ class Server {
     const connection = mongoose.connect(process.env.MONGODB_URI, mongooseConfigs);
     connection
       .then(result => {
-        console.log('mongo connection success');
+        console.log('mongo connection success', result);
       })
       .catch(error => {
-        console.error('mongo connection error');
+        console.error('mongo connection error', error);
       });
 
     // Log requests to console
