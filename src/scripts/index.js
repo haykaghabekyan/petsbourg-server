@@ -5,15 +5,12 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import AuthRouter from './routes/auth';
 import PetsRouter from './routes/pets';
 import PetTypesRouter from './routes/pet-types';
 import PetBreedsRouter from './routes/pet-breeds';
 import UsersRouter from './routes/users';
 import SearchRouter from './routes/search';
-
-dotenv.config();
 
 class Server {
   app = null;
