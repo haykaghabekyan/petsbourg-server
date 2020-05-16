@@ -25,14 +25,19 @@ class Server {
   }
 
   config() {
-    const mongoUrl = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}`;
+    let mongoUrl = '';
+    if (process.env.MONGODB_USERNAME && process.env.MONGODB_PASSWORD) {
+      mongoUrl = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}`;
+    } else {
+      mongoUrl = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}`;
+    }
     const mongooseConfigs = {
       useNewUrlParser: true,
     };
     const connection = mongoose.connect(mongoUrl, mongooseConfigs);
     connection
       .then(result => {
-        console.log('mongo connection success', result);
+        // console.log('mongo connection success', result);
       })
       .catch(error => {
         console.error('mongo connection error', error);
@@ -100,7 +105,7 @@ class Server {
   }
 }
 
-const port = Number(process.env.PORT) || 3003;
+const port = process.env.PORT;
 
 const server = new Server();
 server.start(port);
