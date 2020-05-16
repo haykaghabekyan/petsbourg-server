@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { JWT_PUBLIC_KEY } from '../configs/jwt';
 
 export const requireAuth = (req, res, next) => {
     if (req.headers.authorization) {
@@ -8,7 +7,7 @@ export const requireAuth = (req, res, next) => {
 
         let decoded = null;
         try {
-            decoded = jwt.verify(jwtToken, JWT_PUBLIC_KEY);
+            decoded = jwt.verify(jwtToken, process.env.JWT_PRIVATE_KEY);
         } catch (error) {
             console.error('invalid jwt', error);
         }

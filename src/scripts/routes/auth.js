@@ -2,9 +2,8 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user';
-import { JWT_PUBLIC_KEY } from '../configs/jwt';
 
-const signToken = data => jwt.sign(data, JWT_PUBLIC_KEY, { expiresIn: 60 * 60 });
+const signToken = data => jwt.sign(data, process.env.JWT_PRIVATE_KEY, { expiresIn: 60 * 60 });
 
 class AuthRouter {
     router = null;
