@@ -5,11 +5,11 @@
   "repository": "git@github.com:haykaghabekyan/petsbourg-server.git",
   "main": "./dist/scripts/index.js",
   "scripts": {
-    "start": "node ./dist/scripts/index.js",
-    "build": "NODE_ENV=production ./node_modules/.bin/babel ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
-    "start:dev": "nodemon ./dist/scripts/index.js",
+    "start": "node --require dotenv/config ./dist/scripts/index.js",
+    "build": "./node_modules/.bin/babel ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
+    "start:dev": "nodemon --require dotenv/config --inspect=9230 ./dist/scripts/index.js",
     "build:dev": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "sh env.sh & npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
@@ -24,18 +24,19 @@
     "nodemon": "1.12.1"
   },
   "dependencies": {
-    "axios": "0.17.1",
+    "axios": "0.19.2",
     "babel-polyfill": "6.26.0",
     "bcrypt": "2.0.0",
     "body-parser": "1.18.2",
     "cloudinary": "1.11.0",
     "cors": "2.8.4",
+    "dotenv": "^8.2.0",
     "express": "4.16.2",
     "jsonwebtoken": "8.1.0",
-    "lodash": "4.17.4",
+    "lodash": "4.17.15",
     "moment": "2.24.0",
-    "mongoose": "5.2.1",
-    "morgan": "1.9.0",
+    "mongoose": "5.9.14",
+    "morgan": "1.10.0",
     "multer": "1.3.1",
     "path": "0.12.7"
   }
