@@ -26,11 +26,10 @@ class Server {
 
   config() {
     const mongoUrl = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}`;
-    console.log('mongoUrl:', mongoUrl);
     const mongooseConfigs = {
       useNewUrlParser: true,
     };
-    const connection = mongoose.connect(url, mongooseConfigs);
+    const connection = mongoose.connect(mongoUrl, mongooseConfigs);
     connection
       .then(result => {
         console.log('mongo connection success', result);
