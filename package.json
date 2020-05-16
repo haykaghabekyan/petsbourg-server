@@ -9,7 +9,7 @@
     "build": "NODE_ENV=production ./node_modules/.bin/babel ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
     "start:dev": "nodemon ./dist/scripts/index.js",
     "build:dev": "./node_modules/.bin/babel -w ./src/scripts --out-dir ./dist/scripts --presets=env,stage-0",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "echo NODE_ENV; && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
