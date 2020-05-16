@@ -5,6 +5,9 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 import { Router } from 'express';
 import AuthRouter from './routes/auth';
