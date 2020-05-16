@@ -6,16 +6,14 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
-dotenv.config();
-
-import { Router } from 'express';
 import AuthRouter from './routes/auth';
 import PetsRouter from './routes/pets';
 import PetTypesRouter from './routes/pet-types';
 import PetBreedsRouter from './routes/pet-breeds';
 import UsersRouter from './routes/users';
-import SearchRouter from './routes/search';;
+import SearchRouter from './routes/search';
+
+dotenv.config();
 
 class Server {
     app = null;
@@ -63,7 +61,7 @@ class Server {
             // optionsSuccessStatus: 200,
         };
 
-        const router = Router();
+        const router = express.Router();
 
         router.use('/auth', AuthRouter);
         router.use('/pets', PetsRouter);
