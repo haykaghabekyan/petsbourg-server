@@ -71,6 +71,13 @@ class Server {
         router.use('/pet-breeds', PetBreedsRouter);
         router.use('/users', UsersRouter);
         router.use('/search', SearchRouter);
+        router.get('/health', (req, res) => {
+            res
+              .status(200)
+              .send({
+                  date: new Date(),
+              });
+        });
 
         this.app.use('/api', cors(corsOptions), router);
     }
